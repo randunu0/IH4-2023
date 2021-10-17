@@ -8,3 +8,5 @@ def Unzip(folder):
     for file in files:
         with ZipFile(folder + '\\' + file) as ZipObj:
             ZipObj.extractall(folder)
+        os.remove(folder + '\\' + file)
+        
