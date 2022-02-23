@@ -54,6 +54,12 @@ def updateTable(table, source):
             df["HourEnding"] = pd.to_datetime(df["Timestamp"]).dt.time
             df = df.drop(['Timestamp'], axis=1)
 
+        if table == "SEL":
+            df.rename(columns = {list(df)[0]:'Timestamp'}, inplace=True)
+            df["OperatingDay"] = pd.to_datetime(df["Timestamp"]).dt.date
+            df["HourEnding"] = pd.to_datetime(df["Timestamp"]).dt.time
+            df = df.drop(["Timestamp"], axis=1)
+
         df.to_sql(con=connection, name=table, if_exists='append', index=False)
         print(file)
 
