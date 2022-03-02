@@ -1,0 +1,28 @@
+{% extends "template.html" %}
+{% block page_title %}Home{% endblock %}
+{% block main_panel %}
+{{ super() }}
+
+<h1> welcome to the homepage </h1>
+
+<p> envisioning a grid with buttons for each chart</p>
+
+
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Buttons</h4>
+        <!-- <p class="card-description">Add class</p> -->
+        <div class="template-demo">
+          <a class="text-white" href="/chart-system-wide-demand"><button type="button" class="btn btn-success btn-lg btn-fw">System Wide Demand</button></a>
+            <button type="button" class="btn btn-danger btn-lg btn-fw">Placeholder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block js_scripts %}
+
+{% endblock %}
