@@ -37,10 +37,20 @@ def get_chart(chart_type, start_date, end_date):
 
         return ch_data, ch_labels
     
-    return df
+    if chart_type == "SWL":
+        ch_data = df['Demand'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        ch_times = df['HourEnding'].tolist()
 
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = []
+        for x in range(len(ch_days_dt)):
+            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
 
-# def updateTable(table, source):
+        return ch_data, ch_labels
     
 #     for file in glob.glob("*.csv"):
 #         df = pd.read_csv(file)
