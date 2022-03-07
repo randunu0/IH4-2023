@@ -7,6 +7,12 @@ import datetime as dt
 import shutil
 import datetime
 
+def combine_date_time(date, time):
+    combined = []
+    for x in range(len(date)):
+        combined.append(str(datetime.datetime.combine(date[x], time[x]).strftime('%Y-%m-%d %H:%M')))
+    return combined
+
 def get_chart(chart_type, start_date, end_date):
 
     #connecting to sqlalchemy
@@ -31,10 +37,7 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = []
-        for x in range(len(ch_days_dt)):
-            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
-
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
     if chart_type == "SWL":
@@ -46,10 +49,7 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = []
-        for x in range(len(ch_days_dt)):
-            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
-
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
     if chart_type == "SPP":
@@ -61,10 +61,7 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = []
-        for x in range(len(ch_days_dt)):
-            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
-
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
 
     return df
