@@ -41,8 +41,11 @@ chart_page_content = {
 @app.route('/chart/<chart_type>/<start_date>/<end_date>')
 def swd(chart_type = 'RTSL', start_date = 'today', end_date = 'today'):
     if session.get('id', None):
-        chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
-        return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type])
+        if chart_type in chart_page_content:
+            chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+            return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type])
+        else:
+            return render_template('home.html', error="Chart not found")
     else:
         return render_template('login.html', error="You are not signed in.")
 
