@@ -27,6 +27,7 @@
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-center">Texas Grid Analytics</h3>
                 <h3 class="card-title text-center">Login</h3>
+                {% if error %} <p class="text-danger">Error: {{error}}</p> {% endif %}
                 <p class="text-center mb-3">For demo purposes use username "FH10" and password "demo"</p>
                 <form action="/login" method="POST">
                   <div class="form-group">
