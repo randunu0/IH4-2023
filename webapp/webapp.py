@@ -30,13 +30,13 @@ def home():
         return render_template('login.html', error="Please login to access the site")
 
 chart_page_content = {
-    "RTSL": ["real-time-system-load", "longer description here.", "units here"],
-    "RTSC": ["RTSC Name Here", "RTSC longer description to come", "units here"],
-    "SASC": ["SASC Name Here ", "longer description to come", "units here"],
-    "SEL": ["SEL Name Here ", "longer description to come", "units here"],
-    "SPP": ["SPP Name Here", "longer description to come", "units here"],
-    "SWL": ["SWL Name Here", "longer description to come", "units here"],
-    "WPP": ["WPP Name Here", "longer description to come", "units here"],
+    "RTSL": ["Real Time System Load", "longer description here.", "units here"],
+    "RTSC": ["Real Time System Condition", "RTSC longer description to come", "units here"],
+    "SASC": ["System Ancilliary Service", "longer description to come", "units here"],
+    "SEL": ["State Estimator Load", "longer description to come", "units here"],
+    "SPP": ["Solar Power Production", "longer description to come", "units here"],
+    "SWL": ["System Wide Load", "longer description to come", "units here"],
+    "WPP": ["Wind Power Production", "longer description to come", "units here"],
 }
 
 @app.route('/chart/<chart_type>', methods=["GET", "POST"])
