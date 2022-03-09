@@ -1,4 +1,3 @@
-from tracemalloc import start
 import pandas as pd
 import sqlalchemy
 import datetime
