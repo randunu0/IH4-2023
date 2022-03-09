@@ -1,11 +1,23 @@
-
-import os
-import glob
+from tracemalloc import start
 import pandas as pd
 import sqlalchemy
-import datetime as dt
-import shutil
 import datetime
+
+def combine_date_time_24bug(date, time):
+    combined = []
+    for x in range(len(date)):
+        if time[x] == datetime.time(hour=0, minute=0):
+            temp_combination = str(datetime.datetime.combine(date[x] + datetime.timedelta(days=1), time[x]).strftime('%Y-%m-%d %H:%M'))
+        else:
+            temp_combination = str(datetime.datetime.combine(date[x], time[x]).strftime('%Y-%m-%d %H:%M'))
+        combined.append(temp_combination)
+    return combined
+
+def combine_date_time(date, time):
+    combined = []
+    for x in range(len(date)):
+        combined.append(str(datetime.datetime.combine(date[x], time[x]).strftime('%Y-%m-%d %H:%M')))
+    return combined
 
 def get_chart(chart_type, start_date, end_date):
 
@@ -23,6 +35,9 @@ def get_chart(chart_type, start_date, end_date):
     df = pd.read_sql_table(chart_type, connection)
 
     if chart_type == "RTSL":
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
         ch_data = df["Valley"].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
@@ -31,33 +46,37 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = []
-        for x in range(len(ch_days_dt)):
-            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
-
+        ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
-    return df
+    if chart_type == "SWL":
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        ch_data = df['Demand'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        ch_times = df['HourEnding'].tolist()
 
-
-# def updateTable(table, source):
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        return ch_data, ch_labels
     
-#     for file in glob.glob("*.csv"):
-#         df = pd.read_csv(file)
+    if chart_type == "SPP":
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        ch_data = df['SystemWide'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        ch_times = df['HourEnding'].tolist()
 
-#         df.rename(columns = {list(df)[0]:'OperatingDay', list(df)[1]:'HourEnding'}, inplace=True)   # Assumes that the first two columns in a df are Date and Time
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        return ch_data, ch_labels
 
-#         df["OperatingDay"] = pd.to_datetime(df["OperatingDay"]).dt.date
-#         df["HourEnding"] = df["HourEnding"] + ":00"
-#         df.to_sql(con=connection, name=table, if_exists='append', index=False)
-#         print(file)
-
-#     os.chdir("..")
-#     try:
-#         shutil.rmtree(table)
-#         print('Done')
-#     except:
-#         print("Unhandled Deletion Exception")
-
-#     cursor.close()
-#     db.close()
+    return df

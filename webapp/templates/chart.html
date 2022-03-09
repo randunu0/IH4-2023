@@ -7,11 +7,36 @@
     <div class="page-header">
       <h3 class="page-title"> {{ page_content[0] }} </h3>
     </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <form action="" method="POST">
+          <div class="input-group date input-daterange" data-provide="datepicker">
+            <div class="form-group">
+              <div class="input-group">
+                <input type="text" class="form-control" name="start_date" id="start_date" value="{{ chart_start_date }}">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                </div>
+                <div class="input-group-addon mx-2 align-bottom"> to </div>
+                <input type="text" class="form-control" name="end_date" id="end_date" value="{{ chart_end_date }}">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                </div>
+                <button type="submit" class="ml-3 btn btn-primary enter-btn">View</button>
+                <!-- Client Side Filtering -->
+                <!-- <button onclick="filterDate()" class="ml-3 btn btn-primary enter-btn">Filter</button>
+                <button onclick="resetDate()" class="ml-3 btn btn-primary enter-btn">Reset</button> -->
+              </div>
+            </div>
+          </div>
+        </form>
+      </ol>
+    </nav>
     <div class="row">
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">{{ page_content[0] }} in mW</h4>
+            <h4 class="card-title">{{ page_content[0] }}</h4>
             <canvas id="lineChart" style="height:250px"></canvas>
           </div>
         </div>
@@ -34,11 +59,14 @@
 {% block js_scripts %}
 <!-- Plugin js for this page -->
     <!-- <script src="assets/vendors/chart.js/Chart.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script> -->
+    <script src="{{ url_for('static', filename='assets/vendors/date-fns/date_fns.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
     <!-- End plugin js for this page -->
 
     <!-- Custom js for this page -->
-    <!-- <script src="assets/js/chart.js"></script> -->
     <script>
         $(function() {
   /* ChartJS
@@ -47,15 +75,15 @@
    */
   'use strict';
 
-  var swd_data = {{ chart_data }}
+  var js_chart_data = {{ chart_data }}
   
-  var swd_labels = {{ chart_labels|safe }}
+  var js_chart_labels = {{ chart_labels|safe }}
 
   var data = {
-    labels: swd_labels,
+    labels: js_chart_labels,
     datasets: [{
-      label: 'usage in MW',
-      data: swd_data,
+      label: '{{ page_content[2] }}',
+      data: js_chart_data,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -80,22 +108,27 @@
 
   var options = {
     scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
+      x: {
+        type: 'time',
+        time: {
+          parser: "yyyy-MM-dd HH:mm"
         },
-        gridLines: {
-          color: "rgba(204, 204, 204,0.1)"
+        grid: {
+          color: 'rgba(204,204,204,0.1)',
+          borderColor: 'grey',
+          tickColor: 'grey'
         }
-      }],
-      xAxes: [{
-        gridLines: {
-          color: "rgba(204, 204, 204,0.1)"
+      },
+      y: {
+        grid: {
+          color: 'rgba(204,204,204,0.1)',
+          borderColor: 'grey',
+          tickColor: 'grey'
         }
-      }]
+      }
     },
     legend: {
-      display: false
+      display: true
     },
     elements: {
       point: {
@@ -115,6 +148,15 @@
 
 
 });
+
+// client side filtering
+// function filterDate(){
+//   const starting = document.getElementById('start_date').value;
+//   console.log(starting);
+//   const ending = document.getElementById('end_date').value;
+
+
+// }
     </script>
     <!-- End custom js for this page -->
 

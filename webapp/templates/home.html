@@ -11,6 +11,7 @@
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
+        {% if error %} <h3 class="text-danger">Error: {{error}}</h3> {% endif %}
         <h4 class="card-title">Buttons</h4>
         <!-- <p class="card-description">Add class</p> -->
         <div class="template-demo">
