@@ -3,10 +3,35 @@
 {% block main_panel %}
 {{ super() }}
 
-<h1> welcome to the homepage </h1>
+<h1 class="mb-3">Welcome to Texas Grid Analytics</h1>
 
-<p> envisioning a grid with buttons for each chart</p>
 
+{% if error %}
+<div class="col-md-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+       <h3 class="text-danger">Error: {{error}}</h3>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="col-md-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">About Texas Grid Analytics</h4>
+      <p>The electricity infrastructure and market in Texas are managed by the Electric Reliability Council of 
+        Texas (ERCOT).  It schedules the power production of over 710 generation units having a total capacity 
+        of over 86 GW and moves electric power over 46,500 miles of 69 kV and higher transmission lines.  As 
+        the nation’s largest wind power producer, ERCOT operates a total installed capacity of 25 GW wind 
+        generation capacity.  Additionally, ERCOT runs the electricity wholesale bulk-power and retail markets.  
+        Over 1800 active market participants generate, move, buy, sell, or use wholesale electricity.  To operate 
+        the Texas grid reliably, ERCOT monitors and collects grid and market conditions.  Collected data are 
+        diverse and voluminous. </p>
+      <p>Texas Grid Analytics is a web-based dashboard for for displaying grid and market conditions. In the future, we aim to have analytics functions as well.</p>
+    </div>
+  </div>
+</div>
 
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
@@ -21,6 +46,24 @@
       </div>
     </div>
   </div>
+
+<div class="col-md-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Charts</h4>
+      <p class="card-description">*Goal for final product, will be placed and aligned better*</p>
+      <div class="template-demo">
+        <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='system-wide-demand') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand</button></a>
+        <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='fuel-type-generation') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">Fuel Type Generation</button></a>
+        <br/><br/>
+        <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='system-frequency') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">System Frequency</button></a>
+        <a class="text-white mt-1 mb-1" href="{{ url_for('chart', chart_type='wind-and-solar') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">Wind and Solar</button></a>
+        <br/><br/>
+        <a class="text-white mt-1 mb-1" href="{{ url_for('chart', chart_type='electricity-prices') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">Electricity Prices</button></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 
