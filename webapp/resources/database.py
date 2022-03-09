@@ -32,9 +32,10 @@ def get_chart(chart_type, start_date, end_date):
                                                           database_ip, database_name))
     connection = database_connection.connect() 
 
-    df = pd.read_sql_table(chart_type, connection)
+    # df = pd.read_sql_table(chart_type, connection)
 
-    if chart_type == "RTSL":
+    if chart_type == "system-wide-demand":
+        df = pd.read_sql_table("RTSL", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
