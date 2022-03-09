@@ -27,24 +27,22 @@ def home():
     if session.get('id', None):
         return render_template('home.html')
     else:
-        return render_template('login.html', error="Please login to access the site")
+        return render_template('login.html')
 
 chart_page_content = {
     "system-wide-demand": ["System-Wide Demand", "System-Wide Demand displays the current power demand of the ERCOT, which is the expected peak electrical power that is required to be provided to the entire grid. This data is updated every 15 minutes. <br/> <strong>Fun Fact:</strong> The ERCOT system had a record peak demand of 74,820 MW in August 2019. (<a href='https://www.ercot.com/files/docs/2021/12/30/ERCOT_Fact_Sheet.pdf'>Source</a>) <br/><br/>  <a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=12340&reportTitle=System-Wide%20Demand&showHTMLView=&mimicKey'>Data Sources</a>", "Demand in GW (SWD)"],
     "fuel-type-generation": ["Total Generation by Fuel Type", "Here, you can observe the real-time and historical power generation of the entire ERCOT grid, as well as the contributions by each distinct fuel source", ["Generation in GW (SEL)", "Generation in GW (GFT)"]],
     "wind-and-solar": ["Wind + Solar Power Generation", "Wind/Solar Power Generation separately displays the total generation of wind and solar power. Since nonrenewable generation greatly exceeds renewable generation, it's useful to observe renewable generation at its relative power scale separately. The data is updated hourly. <br/> <strong>Fun Fact:</strong> The ERCOT system had a record wind generation of 24,681 MW on December 23, 2021, and record solar generation of 7,036 MW on August 3, 2021.", ["Generation in MW (WPP)", "Generation in MW (SPP)"]],
     "system-frequency": ["System Frequency", "System Frequency displays the grid electrical frequency, which is an important parameter that indicates the balance between generation and demand. In North America, 60 Hz is the default electrical frequency in power systems. If demand starts exceeding generation, the system frequency will fall below 60 Hz. If generation starts exceeding demand, the system frequency will rise above 60 Hz. <br/><br/> <strong>Fun Fact:</strong> In the Texas winter storm in February 2021, the system frequency dropped below a critical lower frequency threshold of 59.4 Hz. A protection scheme kicked into place, and would have completely shut down the grid if the frequency had remained under that threshold for 9 minutes. This is done to prevent massive irreversible damage to the grid. Unfortunately, such a collapse can last for weeks. Luckily, with 4 minutes and 37 seconds left to spare, ERCOT was able to restore the frequency to safer levels above the threshold.", "Frequency in Hz (RTSC)"],
-    "electricity-prices": ["Real-Time Market Prices", "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price that ERCOT utilizes to schedule generation while maximizing efficiency in power losses and generation cost. An important distinction is that this metric is not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes.", "Load Zone Settlement Point Prices in $ (SMPP)"]
-    
+    "electricity-prices": ["Real-Time Market Prices", "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price that ERCOT utilizes to schedule generation while maximizing efficiency in power losses and generation cost. An important distinction is that this metric is not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes.", "Load Zone Settlement Point Prices in $ (SMPP)"],
 
-
-    # "RTSL": ["Real Time System Load", "longer description here.", "units here"],
-    # "RTSC": ["Real Time System Condition", "RTSC longer description to come", "units here"],
-    # "SASC": ["System Ancilliary Service", "longer description to come", "units here"],
-    # "SEL": ["State Estimator Load", "longer description to come", "units here"],
-    # "SPP": ["Solar Power Production", "longer description to come", "units here"],
-    # "SWL": ["System Wide Load", "longer description to come", "units here"],
-    # "WPP": ["Wind Power Production", "longer description to come", "units here"],
+    "RTSL": ["Real Time System Load", "longer description here.", "units here"],
+    "RTSC": ["Real Time System Condition", "RTSC longer description to come", "units here"],
+    "SASC": ["System Ancilliary Service", "longer description to come", "units here"],
+    "SEL": ["State Estimator Load", "longer description to come", "units here"],
+    "SPP": ["Solar Power Production", "longer description to come", "units here"],
+    "SWL": ["System Wide Load", "longer description to come", "units here"],
+    "WPP": ["Wind Power Production", "longer description to come", "units here"],
 }
 
 @app.route('/chart/<chart_type>', methods=["GET", "POST"])
