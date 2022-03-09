@@ -47,7 +47,7 @@ chart_page_content = {
 
 @app.route('/chart/<chart_type>', methods=["GET", "POST"])
 @app.route('/chart/<chart_type>/<start_date>/<end_date>', methods=["GET", "POST"])
-def swd(chart_type='RTSL', start_date=None, end_date=None):
+def chart(chart_type='RTSL', start_date=None, end_date=None):
     if session.get('id', None):
         if request.method == "GET":
             if chart_type in chart_page_content:
