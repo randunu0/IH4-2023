@@ -82,7 +82,7 @@
   var data = {
     labels: js_chart_labels,
     datasets: [{
-      label: '{{ page_content[2] }}',
+      label: "{{ page_content[2]|safe }}",
       data: js_chart_data,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
