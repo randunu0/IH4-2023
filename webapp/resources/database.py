@@ -49,12 +49,13 @@ def get_chart(chart_type, start_date, end_date):
         
         ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
         return ch_data, ch_labels
-    
-    if chart_type == "SWL":
+
+    if chart_type == "system-frequency":
+        df = pd.read_sql_table("RTSC", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
-        ch_data = df['Demand'].tolist()
+        ch_data = df["CurrentFrequency"].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
 
