@@ -21,6 +21,11 @@ def login():
     else:
         return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.pop("id", None)
+    return(redirect(url_for("login")))
+
 @app.route("/")
 def home():
     if session.get('id', None):
