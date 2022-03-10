@@ -40,12 +40,25 @@
         <ul class="nav">
         
           <li class="nav-item nav-category">
+            
+          </li>
+
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ url_for('home') }}">
+              <!-- <span class="menu-icon">
+                <i class="mdi mdi-led-on"></i>
+              </span> -->
+              <span class="menu-title">Texas Grid Analytics Home</span>
+            </a>
+          </li>
+
+          <li class="nav-item nav-category">
             <span class="nav-link">Dashboards</span>
           </li>
 
 
           <li class="nav-item menu-items">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{{ url_for('chart', chart_type='system-wide-demand') }}">
               <span class="menu-icon">
                 <i class="mdi mdi-led-on"></i>
               </span>
@@ -54,7 +67,7 @@
           </li>
 
           <li class="nav-item menu-items">
-            <a class="nav-link" href="#fueltype">
+            <a class="nav-link" href="{{ url_for('chart', chart_type='fuel-type-generation') }}">
               <span class="menu-icon">
                 <i class="mdi mdi-gas-cylinder"></i>
               </span>
@@ -63,7 +76,7 @@
           </li>
 
           <li class="nav-item menu-items">
-            <a class="nav-link" href="#sq">
+            <a class="nav-link" href="{{ url_for('chart', chart_type='system-frequency') }}">
               <span class="menu-icon">
                 <i class="mdi mdi-pulse"></i>
               </span>
@@ -72,14 +85,31 @@
           </li>
 
           <li class="nav-item menu-items">
-            <a class="nav-link" href="#pricing">
+            <a class="nav-link" href="{{ url_for('chart', chart_type='wind-and-solar') }}">
+              <span class="menu-icon">
+                <i class="mdi mdi-weather-sunny"></i>
+              </span>
+              <span class="menu-title">Wind and Solar</span>
+            </a>
+          </li>
+
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ url_for('chart', chart_type='electricity-prices') }}">
               <span class="menu-icon">
                 <i class="mdi mdi-currency-usd"></i>
               </span>
-              <span class="menu-title">Electricity Price</span>
+              <span class="menu-title">Electricity Prices</span>
             </a>
           </li>
           
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ url_for('logout') }}">
+              <!-- <span class="menu-icon">
+                <i class="mdi mdi-led-on"></i>
+              </span> -->
+              <span class="menu-title">Logout</span>
+            </a>
+          </li>
           
 
         </ul>

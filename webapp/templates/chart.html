@@ -47,7 +47,7 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">{{ page_content[0] }} Description</h4>
-            <p>{{ page_content[1] }}</p>
+            <p>{{ page_content[1]|safe }}</p>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
   var data = {
     labels: js_chart_labels,
     datasets: [{
-      label: '{{ page_content[2] }}',
+      label: "{{ page_content[2]|safe }}",
       data: js_chart_data,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
@@ -117,6 +117,10 @@
           color: 'rgba(204,204,204,0.1)',
           borderColor: 'grey',
           tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Time'
         }
       },
       y: {
@@ -124,11 +128,22 @@
           color: 'rgba(204,204,204,0.1)',
           borderColor: 'grey',
           tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: '{{ page_content[2]|safe }}'
         }
       }
     },
     legend: {
       display: true
+    },
+    tooltips: {
+      mode: 'nearest'
+    },
+    hover: {
+      mode: 'nearest',
+      animationDuration: 0
     },
     elements: {
       point: {
