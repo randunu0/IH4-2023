@@ -38,6 +38,9 @@
       <div class="card-body">
         <h4 class="card-title">Links for Midpoint Demo</h4>
         <p class="card-description">*Section just for today*</p>
+        {% if error %} <h3 class="text-danger">Error: {{error}}</h3> {% endif %}
+        <h4 class="card-title">Buttons</h4>
+        <!-- <p class="card-description">Add class</p> -->
         <div class="template-demo">
           <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='system-wide-demand') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand</button></a>
           <!-- <a class="text-white mt-1 mb-3" href="/chart/fuel-type-generation"><button type="button" class="btn btn-primary btn-lg btn-fw">Fuel Type Generation</button></a> -->

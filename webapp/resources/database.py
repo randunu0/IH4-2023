@@ -132,6 +132,7 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
+
     if chart_type == "RTSC":
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
@@ -190,6 +191,6 @@ def get_chart(chart_type, start_date, end_date):
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
         ch_labels = combine_date_time(ch_days_dt, ch_times)
-        return ch_data, ch_labels    
+        return ch_data, ch_labels
 
     return df
