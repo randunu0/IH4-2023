@@ -33,11 +33,12 @@ def get_chart(chart_type, start_date, end_date):
 
 
     if chart_type == "system-wide-demand":
-        df = pd.read_sql_table("RTSL", connection)
+        df = pd.read_sql_table("SWL", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
-        ch_data = df["Valley"].tolist()
+        ch_data_mw = df["Demand"].tolist()
+        ch_data = [entry / 1000 for entry in ch_data_mw]
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
 
@@ -45,7 +46,7 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
 
     if chart_type == "fuel-type-generation":
