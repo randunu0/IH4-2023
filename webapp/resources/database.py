@@ -116,3 +116,4 @@ def get_chart(chart_type, start_date, end_date):
         return ch_data, ch_labels
 
     return pd.read_sql_table(chart_type, connection)
+
