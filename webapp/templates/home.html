@@ -34,43 +34,6 @@
 </div>
 
 <div class="col-md-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">Links for Midpoint Demo</h4>
-        <p class="card-description">*Section just for today*</p>
-        {% if error %} <h3 class="text-danger">Error: {{error}}</h3> {% endif %}
-        <h4 class="card-title">Buttons</h4>
-        <!-- <p class="card-description">Add class</p> -->
-        <div class="template-demo">
-          <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='system-wide-demand') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand</button></a>
-          <!-- <a class="text-white mt-1 mb-3" href="/chart/fuel-type-generation"><button type="button" class="btn btn-primary btn-lg btn-fw">Fuel Type Generation</button></a> -->
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="{{ url_for('chart', chart_type='system-frequency') }}"><button type="button" class="btn btn-primary btn-lg btn-fw">System Frequency</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/RTSL"><button type="button" class="btn btn-primary btn-lg btn-fw">Real Time System Load</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/RTSC"><button type="button" class="btn btn-primary btn-lg btn-fw">Real Time System Condition</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/SWL"><button type="button" class="btn btn-primary btn-lg btn-fw">System Wide Load</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/SPP"><button type="button" class="btn btn-primary btn-lg btn-fw">Solar Power Production</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/WPP"><button type="button" class="btn btn-primary btn-lg btn-fw">Wind Power Production</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/system-wide-demand"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand (All Data)</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/system-wide-demand/2021-10-22/2021-10-29"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand (One Week)</button></a>
-          <br/><br/>
-          <a class="text-white mt-1 mb-3" href="/chart/system-wide-demand/2021-10-22/2021-10-22"><button type="button" class="btn btn-primary btn-lg btn-fw">System-Wide Demand (One Day)</button></a>
-          <!-- <a class="text-white mt-1 mb-1" href="/chart/wind-and-solar"><button type="button" class="btn btn-primary btn-lg btn-fw">Wind and Solar</button></a> -->
-          <br/><br/>
-          <!-- <a class="text-white mt-1 mb-1" href="/chart/electricity-prices"><button type="button" class="btn btn-primary btn-lg btn-fw">Electricity Prices</button></a> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-<div class="col-md-12 grid-margin stretch-card">
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">Charts</h4>
