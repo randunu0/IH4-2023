@@ -33,7 +33,7 @@ def get_chart(chart_type, start_date, end_date):
 
 
     if chart_type == "system-wide-demand":
-        df = pd.read_sql_table("SWL", connection)
+        df = pd.read_sql_table("SWD", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
