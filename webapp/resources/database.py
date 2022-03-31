@@ -39,6 +39,12 @@ def get_chart(chart_type, start_date, end_date):
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]                        
         ch_data_mw = df["Demand"].tolist()
         ch_data = [entry / 1000 for entry in ch_data_mw]
         ch_days = df['OperatingDay'].tolist()
@@ -61,6 +67,12 @@ def get_chart(chart_type, start_date, end_date):
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         ch_data = df["Valley"].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
@@ -81,6 +93,12 @@ def get_chart(chart_type, start_date, end_date):
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=1)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         ch_data = df["CurrentFrequency"].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
@@ -102,6 +120,12 @@ def get_chart(chart_type, start_date, end_date):
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         ch_data = df['SystemWide'].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
