@@ -31,7 +31,9 @@ def get_chart(chart_type, start_date, end_date):
                                                           database_ip, database_name))
     connection = database_connection.connect() 
 
-
+    # -----------------------------------
+    # System Wide Demand
+    # -----------------------------------
     if chart_type == "system-wide-demand":
         df = pd.read_sql_table("SWD", connection)
         if (start_date and end_date):
@@ -49,6 +51,10 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
 
+    # -----------------------------------
+    # Fuel Type Generation
+    # TODO complete graph
+    # -----------------------------------
     if chart_type == "fuel-type-generation":
         # PLACEHOLDER
         df = pd.read_sql_table("RTSL", connection)
@@ -66,6 +72,10 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
         return ch_data, ch_labels
 
+    # -----------------------------------
+    # System Frequency
+    # TODO hour selector
+    # -----------------------------------
     if chart_type == "system-frequency":
         df = pd.read_sql_table("RTSC", connection)
         if (start_date and end_date):
@@ -82,6 +92,10 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
+    # -----------------------------------
+    # Wind and Solar
+    # TODO add second chart on top
+    # -----------------------------------
     if chart_type == "wind-and-solar":
         # HALFWAY A PLACEHOLDER
         df = pd.read_sql_table("SPP", connection)
@@ -99,6 +113,10 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
 
+    # -----------------------------------
+    # Electricity Prices
+    # TODO connect to db
+    # -----------------------------------
     if chart_type == "electricity-prices":
         df = pd.read_sql_table("SMPP_LZ", connection)
         if (start_date and end_date):
