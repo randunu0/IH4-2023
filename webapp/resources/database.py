@@ -115,7 +115,6 @@ def get_chart(chart_type, start_date, end_date):
     # TODO add second chart on top
     # -----------------------------------
     if chart_type == "wind-and-solar":
-        # HALFWAY A PLACEHOLDER
         df = pd.read_sql_table("SPP", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
@@ -126,16 +125,38 @@ def get_chart(chart_type, start_date, end_date):
             start_date = end_date - pd.Timedelta(days=7)
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
-        ch_data = df['SystemWide'].tolist()
-        ch_days = df['OperatingDay'].tolist()
-        ch_times = df['HourEnding'].tolist()
+        solar_data = df['SystemWide'].tolist()
+        solar_days = df['OperatingDay'].tolist()
+        solar_times = df['HourEnding'].tolist()
 
-        ch_days_dt = []
-        for day in ch_days:
-            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        solar_days_dt = []
+        for day in solar_days:
+            solar_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = combine_date_time(ch_days_dt, ch_times)
-        return ch_data, ch_labels
+        solar_labels = combine_date_time(solar_days_dt, solar_times)
+
+        df = pd.read_sql_table("WPP", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
+        wind_data = df['SystemWide'].tolist()
+        wind_days = df['OperatingDay'].tolist()
+        wind_times = df['HourEnding'].tolist()
+
+        wind_days_dt = []
+        for day in wind_days:
+            wind_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        wind_labels = combine_date_time(wind_days_dt, wind_times)
+
+
+        return [wind_data, solar_data], wind_labels
 
     # -----------------------------------
     # Electricity Prices
