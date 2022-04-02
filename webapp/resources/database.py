@@ -126,14 +126,16 @@ def get_chart(chart_type, start_date, end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         solar_data = df['SystemWide'].tolist()
-        solar_days = df['OperatingDay'].tolist()
-        solar_times = df['HourEnding'].tolist()
 
-        solar_days_dt = []
-        for day in solar_days:
-            solar_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        # Solar Times are the same as Wind Times so disregard one
+        # solar_days = df['OperatingDay'].tolist()
+        # solar_times = df['HourEnding'].tolist()
+
+        # solar_days_dt = []
+        # for day in solar_days:
+        #     solar_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        solar_labels = combine_date_time(solar_days_dt, solar_times)
+        # solar_labels = combine_date_time(solar_days_dt, solar_times)
 
         df = pd.read_sql_table("WPP", connection)
         if (start_date and end_date):
