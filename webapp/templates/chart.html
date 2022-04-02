@@ -63,7 +63,9 @@
     <script src="{{ url_for('static', filename='assets/vendors/date-fns/date_fns.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    
+    {% if (page_content[0] == "System Frequency") %}
+    <script src="{{ url_for('static', filename='assets/vendors/chart.js/chartjs-plugin-annotation.min.js') }}"></script>
+    {% endif %}
     <!-- End plugin js for this page -->
 
     {% if (page_content[0] != "Wind + Solar Power Generation") %}
@@ -147,6 +149,29 @@
       mode: 'nearest',
       animationDuration: 0
     },
+    {% if (page_content[0] == "System Frequency") %}
+    plugins: {
+      annotation: {
+        annotations: {
+          sixty: {
+            type: 'line',
+            yMin: 60,
+            yMax: 60,
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: 2,
+            click: function({chart, element}) {
+              console.log('Line annotation clicked');
+            },
+            label: {
+              backgroundColor: 'grey',
+              content: '60Hz',
+              enabled: true
+            },
+          }
+        }
+      }
+    },
+    {% endif %}
     elements: {
       point: {
         radius: 0
