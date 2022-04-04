@@ -5,7 +5,7 @@
 
 <div class="content-wrapper">
     <div class="page-header">
-      <h3 class="page-title"> {{ page_content[0] }} </h3>
+      <h3 class="page-title">{{ page_content[0] }}</h3>
     </div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -36,7 +36,8 @@
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">{{ page_content[0] }}</h4>
+            <h3 class="card-title">{{ page_content[0] }}</h3>
+            <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
             <canvas id="lineChart" style="height:250px"></canvas>
           </div>
         </div>
@@ -115,7 +116,10 @@
       x: {
         type: 'time',
         time: {
-          parser: "yyyy-MM-dd HH:mm"
+          parser: "yyyy-MM-dd HH:mm",
+          displayFormats: {
+            hour: "MMM d, h a"
+          }
         },
         grid: {
           color: 'rgba(204,204,204,0.1)',
