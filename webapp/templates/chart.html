@@ -5,7 +5,7 @@
 
 <div class="content-wrapper">
     <div class="page-header">
-      <h3 class="page-title"> {{ page_content[0] }} </h3>
+      <h3 class="page-title">{{ page_content[0] }}</h3>
     </div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -36,7 +36,8 @@
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">{{ page_content[0] }}</h4>
+            <h3 class="card-title">{{ page_content[0] }}</h3>
+            <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
             <canvas id="lineChart" style="height:250px"></canvas>
           </div>
         </div>
@@ -63,8 +64,12 @@
     <script src="{{ url_for('static', filename='assets/vendors/date-fns/date_fns.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    
+    {% if (page_content[0] == "System Frequency") %}
+    <script src="{{ url_for('static', filename='assets/vendors/chart.js/chartjs-plugin-annotation.min.js') }}"></script>
+    {% endif %}
     <!-- End plugin js for this page -->
+
+    {% if (page_content[0] != "Wind + Solar Power Generation") %}
 
     <!-- Custom js for this page -->
     <script>
@@ -111,7 +116,10 @@
       x: {
         type: 'time',
         time: {
-          parser: "yyyy-MM-dd HH:mm"
+          parser: "yyyy-MM-dd HH:mm",
+          displayFormats: {
+            hour: "MMM d, h a"
+          }
         },
         grid: {
           color: 'rgba(204,204,204,0.1)',
@@ -137,6 +145,172 @@
     },
     legend: {
       display: true
+    },
+    tooltips: {
+      mode: 'nearest'
+    },
+    hover: {
+      mode: 'nearest',
+      animationDuration: 0
+    },
+    {% if (page_content[0] == "System Frequency") %}
+    plugins: {
+      annotation: {
+        annotations: {
+          sixty: {
+            type: 'line',
+            yMin: 60,
+            yMax: 60,
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: 2,
+            click: function({chart, element}) {
+              console.log('Line annotation clicked');
+            },
+            label: {
+              backgroundColor: 'grey',
+              content: '60Hz',
+              enabled: true
+            },
+          }
+        }
+      }
+    },
+    {% endif %}
+    elements: {
+      point: {
+        radius: 0
+      }
+    }
+  };
+
+  if ($("#lineChart").length) {
+    var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+  }
+
+
+});
+
+// client side filtering
+// function filterDate(){
+//   const starting = document.getElementById('start_date').value;
+//   console.log(starting);
+//   const ending = document.getElementById('end_date').value;
+
+
+// }
+    </script>
+    <!-- End custom js for this page -->
+
+    {% endif %}
+
+    {% if (page_content[0] == "Wind + Solar Power Generation") %}
+
+    <!-- Custom js for this page -->
+    <script>
+        $(function() {
+  /* ChartJS
+   * -------
+   * Data and config for chartjs
+   */
+  'use strict';
+
+  var js_chart_data = {{ chart_data }}
+  
+  var js_chart_labels = {{ chart_labels|safe }}
+
+  var data = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content[2][0]|safe }}",
+        data: js_chart_data[0],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1,
+        fill: false
+    },
+    {
+      label: "{{ page_content[2][1]|safe }}",
+        data: js_chart_data[1],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1,
+        fill: false
+    }]
+  };
+
+
+  var options = {
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          parser: "yyyy-MM-dd HH:mm"
+        },
+        grid: {
+          color: 'rgba(204,204,204,0.1)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(204,204,204,0.1)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Generation in MW'
+        }
+      }
+    },
+    legend: {
+      display: true
+    },
+    tooltips: {
+      mode: 'nearest'
+    },
+    hover: {
+      mode: 'nearest',
+      animationDuration: 0
     },
     elements: {
       point: {
@@ -167,5 +341,9 @@
 // }
     </script>
     <!-- End custom js for this page -->
+
+    {% endif %}
+
+
 
 {% endblock %}
