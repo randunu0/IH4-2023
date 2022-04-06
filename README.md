@@ -12,3 +12,7 @@ Texas Grid Analytics is a web-based dashboard for for displaying grid and market
 
 
 
+## License
+
+This project is released under the MIT License. For more information, read [license.txt](docs/license.txt)
+
