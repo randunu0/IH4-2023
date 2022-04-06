@@ -4,7 +4,7 @@ import datetime
 
 from resources.database import get_chart
 
-app = Flask(__name__, static_url_path='', static_folder='')
+application = app = Flask(__name__, static_url_path='', static_folder='')
 app.secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 app.url_map.strict_slashes = False
 
