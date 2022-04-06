@@ -38,3 +38,11 @@ This project was authored by the Senior Design Faculty Honors Group #10 in Fall 
 
 This project is released under the MIT License. For more information, read [license.txt](docs/license.txt)
 
+
+## Acknowledgements
+
+Special thanks to:
+
+- Dr. Surya Santoso, *Faculty Advisor* ([Bio](https://www.ece.utexas.edu/people/faculty/surya-santoso))
+- Sai Santosh, *TA Advisor*
+- BootstrapDash, *Website Template*
