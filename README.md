@@ -23,6 +23,17 @@ Texas Grid Analytics is a web-based dashboard for for displaying grid and market
   - [AWS Lambda](https://aws.amazon.com/lambda) for automated data gathering
   - [Amazon RDS](https://aws.amazon.com/rds/) for data storage
 
+## Authors
+
+This project was authored by the Senior Design Faculty Honors Group #10 in Fall 2021 + Spring 2022 in the [Electrical & Computer Engineering Department](https://www.ece.utexas.edu/) at the University of Texas at Austin
+
+- Shanil Jasani - [@shaniljasani](https://github.com/shaniljasani)
+- James Choi - [@choiboy1912](https://github.com/choiboy1912)
+- Jezryll Garcia - [@UTjezz3487](https://github.com/UTjezz3487)
+- Ryan Krogfoss - [@rkrogfoss](https://github.com/rkrogfoss)
+- Umar Burney - [@emeraldness](https://github.com/emeraldness)
+- Sohaib Khan - [@sohaibi](https://github.com/sohaibi)
+
 ## License
 
 This project is released under the MIT License. For more information, read [license.txt](docs/license.txt)
