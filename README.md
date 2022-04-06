@@ -8,9 +8,20 @@ Texas Grid Analytics is a web-based dashboard for for displaying grid and market
 ## Getting Started
 
 
+## Built with these technologies
 
+  - [Python 3.9.7](https://www.python.org/)
+  - [Flask 2.0.3](https://flask.palletsprojects.com/en/2.0.x/)
+  - [Bootstrap 4](https://getbootstrap.com/docs/4.0/getting-started/introduction/)
+  - [Chart.js](https://www.chartjs.org/)
+  - [Material Design Icons](https://materialdesignicons.com/)
+  - [jQuery](https://jquery.com/)
 
+## Built for AWS
 
+  - [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk) for webapp hosting
+  - [AWS Lambda](https://aws.amazon.com/lambda) for automated data gathering
+  - [Amazon RDS](https://aws.amazon.com/rds/) for data storage
 
 ## License
 
