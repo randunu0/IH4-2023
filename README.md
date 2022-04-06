@@ -1,3 +1,4 @@
+# Texas Grid Analytics - Senior Design Project
 [Texas Grid Analytics](http://grid-analytics.ece.utexas.edu/) is a web-based dashboard for for displaying grid and market conditions. 
 
 ## About Texas Grid Analytics
@@ -7,6 +8,7 @@ Texas Grid Analytics is a web-based dashboard for for displaying grid and market
 
 ## Getting Started
 
+* [Webapp Development Guide](docs/development-guide.md)
 
 ## Built with these technologies
 
