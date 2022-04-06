@@ -1,11 +1,22 @@
-
-import os
-import glob
 import pandas as pd
 import sqlalchemy
-import datetime as dt
-import shutil
 import datetime
+
+def combine_date_time_24bug(date, time):
+    combined = []
+    for x in range(len(date)):
+        if time[x] == datetime.time(hour=0, minute=0):
+            temp_combination = str(datetime.datetime.combine(date[x] + datetime.timedelta(days=1), time[x]).strftime('%Y-%m-%d %H:%M'))
+        else:
+            temp_combination = str(datetime.datetime.combine(date[x], time[x]).strftime('%Y-%m-%d %H:%M'))
+        combined.append(temp_combination)
+    return combined
+
+def combine_date_time(date, time):
+    combined = []
+    for x in range(len(date)):
+        combined.append(str(datetime.datetime.combine(date[x], time[x]).strftime('%Y-%m-%d %H:%M')))
+    return combined
 
 def get_chart(chart_type, start_date, end_date):
 
@@ -20,9 +31,48 @@ def get_chart(chart_type, start_date, end_date):
                                                           database_ip, database_name))
     connection = database_connection.connect() 
 
-    df = pd.read_sql_table(chart_type, connection)
+    # -----------------------------------
+    # System Wide Demand
+    # -----------------------------------
+    if chart_type == "system-wide-demand":
+        df = pd.read_sql_table("SWD", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]                        
+        ch_data_mw = df["Demand"].tolist()
+        ch_data = [entry / 1000 for entry in ch_data_mw]
+        ch_days = df['OperatingDay'].tolist()
+        ch_times = df['HourEnding'].tolist()
 
-    if chart_type == "RTSL":
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        return ch_data, ch_labels
+
+    # -----------------------------------
+    # Fuel Type Generation
+    # TODO complete graph
+    # -----------------------------------
+    if chart_type == "fuel-type-generation":
+        # PLACEHOLDER
+        df = pd.read_sql_table("RTSL", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         ch_data = df["Valley"].tolist()
         ch_days = df['OperatingDay'].tolist()
         ch_times = df['HourEnding'].tolist()
@@ -31,33 +81,104 @@ def get_chart(chart_type, start_date, end_date):
         for day in ch_days:
             ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = []
-        for x in range(len(ch_days_dt)):
-            ch_labels.append(str(datetime.datetime.combine(ch_days_dt[x], ch_times[x]).strftime('%Y-%m-%d %H:%M')))
+        ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
+        return ch_data, ch_labels
 
+    # -----------------------------------
+    # System Frequency
+    # TODO hour selector
+    # -----------------------------------
+    if chart_type == "system-frequency":
+        df = pd.read_sql_table("RTSC", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=1)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
+        ch_data = df["CurrentFrequency"].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        ch_times = df['HourEnding'].tolist()
+
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = combine_date_time(ch_days_dt, ch_times)
         return ch_data, ch_labels
     
-    return df
+    # -----------------------------------
+    # Wind and Solar
+    # TODO add second chart on top
+    # -----------------------------------
+    if chart_type == "wind-and-solar":
+        df = pd.read_sql_table("SPP", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
+        solar_data = df['SystemWide'].tolist()
+
+        # Solar Times are the same as Wind Times so disregard one
+        # solar_days = df['OperatingDay'].tolist()
+        # solar_times = df['HourEnding'].tolist()
+
+        # solar_days_dt = []
+        # for day in solar_days:
+        #     solar_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        # solar_labels = combine_date_time(solar_days_dt, solar_times)
+
+        df = pd.read_sql_table("WPP", connection)
+        if (start_date and end_date):
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+        else:
+            # DEFAULT VIEW: one week
+            end_date = df.iloc[-1].get('OperatingDay')
+            start_date = end_date - pd.Timedelta(days=7)
+            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
+            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
+        wind_data = df['SystemWide'].tolist()
+        wind_days = df['OperatingDay'].tolist()
+        wind_times = df['HourEnding'].tolist()
+
+        wind_days_dt = []
+        for day in wind_days:
+            wind_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        wind_labels = combine_date_time(wind_days_dt, wind_times)
 
 
-# def updateTable(table, source):
-    
-#     for file in glob.glob("*.csv"):
-#         df = pd.read_csv(file)
+        return [wind_data, solar_data], wind_labels
 
-#         df.rename(columns = {list(df)[0]:'OperatingDay', list(df)[1]:'HourEnding'}, inplace=True)   # Assumes that the first two columns in a df are Date and Time
+    # -----------------------------------
+    # Electricity Prices
+    # TODO connect to db
+    # -----------------------------------
+    if chart_type == "electricity-prices":
+        df = pd.read_sql_table("SMPP_LZ", connection)
+        if (start_date and end_date):
+            df = df[df['DeliveryDate'] >= pd.Timestamp(start_date)]
+            df = df[df['DeliveryDate'] <= pd.Timestamp(end_date)]
+        ch_data = df["SettlementPointPrice"].tolist()
+        ch_days = df['DeliveryDate'].tolist()
+        ch_times = df['DeliveryHour'].tolist()
 
-#         df["OperatingDay"] = pd.to_datetime(df["OperatingDay"]).dt.date
-#         df["HourEnding"] = df["HourEnding"] + ":00"
-#         df.to_sql(con=connection, name=table, if_exists='append', index=False)
-#         print(file)
+        ch_days_dt = []
+        for day in ch_days:
+            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        
+        ch_labels = combine_date_time_24bug(ch_days_dt, ch_times)
+        return ch_data, ch_labels
 
-#     os.chdir("..")
-#     try:
-#         shutil.rmtree(table)
-#         print('Done')
-#     except:
-#         print("Unhandled Deletion Exception")
+    return pd.read_sql_table(chart_type, connection)
 
-#     cursor.close()
-#     db.close()
