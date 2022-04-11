@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
 from resources.database import get_chart
@@ -7,32 +7,10 @@ application = app = Flask(__name__, static_url_path='', static_folder='')
 app.secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 app.url_map.strict_slashes = False
 
-@app.route("/login", methods=["GET","POST"])
-def login():
-    if request.method == 'POST':
-        user = request.form.get("username")
-        pw = request.form.get("password")
-
-        if user == "FH10" and pw == "demo":
-            session['id'] = user
-            return redirect(url_for("home"))
-        else:
-            return render_template('login.html', error="Invalid username or password")
-    else:
-        return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-    session.pop("id", None)
-    return(redirect(url_for("login")))
-
 @app.route("/")
 def home():
-    if session.get('id', None):
-        return render_template('home.html')
-    else:
-        return render_template('login.html')
-
+    return render_template('home.html')
+    
 chart_page_content = {
     "system-wide-demand": ["System-Wide Demand", "System-Wide Demand displays the current and historical power demand of the ERCOT grid, which is the expected total electrical power that is required to be provided to the entire grid. The scheduled generation for the total load ('load' is an engineering term that means the recipient/consumer of electrical power) is calculated with the expected total demand of all customers, among many other variables, so ERCOT uses dynamic forecasting models to try to maximally reduce the error between the forecasted demand and actual demand. Naturally, one may wonder how difficult correctly predicting the total system demand could be, or why it's so important to be as accurate as possible. For starters, ERCOT serves at least 26 million Texans, most of whom are residential consumers with smaller loads plus a smaller number of commercial and other non-residential consumers with typically much larger loads. Each load contributes its own variability to the total load and demand of the system. A few other major factors of variability in demand include weather and social events (such as the Super Bowl). It's important to be as accurate as possible so that the total generation is controlled to be as close to the total actual demand; the difference in power between generation and demand causes variance in the system frequency, which is very sensitive and must be kept relatively stable. This data is updated every 15 minutes. <br/> <strong>Fun Fact:</strong> The ERCOT system had a record peak demand of 74,820 MW in August 2019. (<a href='https://www.ercot.com/files/docs/2021/12/30/ERCOT_Fact_Sheet.pdf'>Source</a>) <br/><br/>  <a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=12340&reportTitle=System-Wide%20Demand&showHTMLView=&mimicKey'>Data Sources</a>", "Demand in GW (SWD)"],
     "fuel-type-generation": ["Generation by Fuel Type", "Generation by Fuel Type displays the real-time and historical power generation of the entire ERCOT grid, as well as the contributions by each distinct fuel source. To decide how to execute power generation for its grid, ERCOT uses an algorithm called Security Constrained Economic Dispatch (SCED) that calculates which combination of available power generators' offers (a.k.a. the amount of power a generator is willing to provide for a specific price) meets total generation requirements, results in the least total cost of dispatch (a.k.a. the actual execution of power delivery), and minimizes the total losses over the grid's web of transmission lines. Both datasets are in 15 minute intervals, with the stacked bar chart of the fuel source contributions being updated at the beginning of each month for the last month's data. <br/><strong>Fun Fact:</strong> Texas is the largest energy-producer and energy-consumer in the US. It produces the most crude oil, natural gas and wind in the nation. <a href='https://www.eia.gov/state/?sid=TX#:~:text=Quick%20Facts&text=Texas%20leads%20the%20nation%20in,power%20plants%20combined%20in%202020'>Source</a> <br/><br/><a href='https://www.ercot.com/files/docs/2021/11/08/IntGenbyFuel2021.xlsx'>Data Source (2021)</a>, <a href='https://www.ercot.com/files/docs/2022/02/08/IntGenbyFuel2022.xlsx'>Data Source (2022)</a>", "Generation in GW (placeholder)"],
@@ -54,39 +32,36 @@ chart_page_content = {
 @app.route('/chart/<chart_type>', methods=["GET", "POST"])
 @app.route('/chart/<chart_type>/<start_date>/<end_date>', methods=["GET", "POST"])
 def chart(chart_type=None, start_date=None, end_date=None):
-    if session.get('id', None):
-        if request.method == "GET":
-            if chart_type in chart_page_content:
-                if start_date and end_date:
-                    try:
-                        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')
-                        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
-                        chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
-                        start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-                        end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-                    except:
-                        chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
-                        start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-                        end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-                else:
+    if request.method == "GET":
+        if chart_type in chart_page_content:
+            if start_date and end_date:
+                try:
+                    start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+                    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
                     chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
                     start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
                     end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-                return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
+                except:
+                    chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+                    start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
+                    end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
             else:
-                return render_template('home.html', error="Chart not found")
-        if request.method == "POST":
-            if chart_type in chart_page_content:
-                start_date = request.form.get("start_date")
-                end_date = request.form.get("end_date")
                 chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
-                return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
-            else:
-                return render_template('home.html', error="Chart not found")
+                start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
+                end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
+            return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
         else:
-            return render_template('home.html', error="Request method not valid")    
+            return render_template('home.html', error="Chart not found")
+    if request.method == "POST":
+        if chart_type in chart_page_content:
+            start_date = request.form.get("start_date")
+            end_date = request.form.get("end_date")
+            chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+            return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
+        else:
+            return render_template('home.html', error="Chart not found")
     else:
-        return render_template('login.html', error="You are not signed in.")
+        return render_template('home.html', error="Request method not valid")    
 
 @app.errorhandler(404)
 def FUN_404(error):
