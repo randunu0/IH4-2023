@@ -29,12 +29,13 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <a class="sidebar-brand brand-logo text-white" href="/">
-              <!-- <img src="assets/images/logo.svg" alt="logo" /> -->
-              Texas Grid Analytics
+              <img src="{{ url_for('static', filename='assets/images/txgridanalytics-logo.svg') }}" alt="logo" />
+              <!-- Texas Grid Analytics -->
             </a>
           <a class="sidebar-brand brand-logo-mini text-white" href="/">
+            <img src="{{ url_for('static', filename='assets/images/txgridanalytics-mini.svg') }}" alt="logo" />
               <!-- <img src="assets/images/logo-mini.svg" alt="logo" /> -->
-              TGA
+              <!-- TGA -->
             </a>
         </div>
         <ul class="nav">
@@ -121,7 +122,8 @@
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
             <a class="navbar-brand brand-logo-mini text-white" href="/">
                 <!-- <img src="assets/images/logo-mini.svg" alt="logo" /> -->
-                TGA
+                <img src="{{ url_for('static', filename='assets/images/txgridanalytics-mini.svg') }}" alt="logo" />
+                <!-- TGA -->
             </a>
           </div>
           <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
