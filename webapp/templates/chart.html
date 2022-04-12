@@ -35,7 +35,7 @@
     </ol>
   </nav>
   <div class="row">
-    <div class="col-lg-12 grid-margin stretch-card">
+    <div class="col-lg-12 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[0] }}</h3>
@@ -48,7 +48,7 @@
 
   {% if (page_content[0] == "Wind + Solar Power Generation") %}
   <div class="row">
-    <div class="col-lg-6 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[2][0]|safe }}</h3>
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <div class="col-lg-6 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[2][1]|safe }}</h3>
@@ -134,22 +134,12 @@
       label: "{{ page_content[2]|safe }}",
       data: js_chart_data,
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
+        'rgba(54, 162, 235, 0.2)'
       ],
       borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
+        'rgba(54, 162, 235, 1)'        
       ],
-      borderWidth: 1,
+      borderWidth: 2,
       fill: false
     }]
   };
@@ -166,18 +156,18 @@
           }
         },
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
         title: {
           display: true,
-          text: 'Time'
+          text: 'Date/Time'
         }
       },
       y: {
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
@@ -205,13 +195,13 @@
           type: 'line',
             yMin: 60,
               yMax: 60,
-                borderColor: 'rgb(54, 162, 235)',
+                borderColor: 'rgb(252, 139, 24)',
                   borderWidth: 2,
                     click: function({ chart, element }) {
                       console.log('Line annotation clicked');
                     },
           label: {
-            backgroundColor: 'grey',
+            backgroundColor: 'dark-grey',
               content: '60Hz',
                 enabled: true
           },
@@ -320,7 +310,7 @@
     */
     'use strict';
 
-    var js_chart_data = {{ chart_data }}
+  var js_chart_data = {{ chart_data }}
   var js_chart_labels = {{ chart_labels| safe }}
 
   var data = {
@@ -330,44 +320,24 @@
         label: "{{ page_content[2][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(54, 162, 235, 1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       },
       {
         label: "{{ page_content[2][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(255,99,132,1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -379,22 +349,12 @@
         label: "{{ page_content[2][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(54, 162, 235, 1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -406,22 +366,12 @@
         label: "{{ page_content[2][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(255,99,132,1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -434,18 +384,18 @@
           parser: "yyyy-MM-dd HH:mm"
         },
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
         title: {
           display: true,
-          text: 'Time'
+          text: 'Date/Time'
         }
       },
       y: {
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
