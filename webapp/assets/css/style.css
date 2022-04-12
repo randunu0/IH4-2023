@@ -20978,16 +20978,18 @@ div.tagsinput {
       background: #e8e9eb;
       color: #000; 
     }
-    .sidebar .nav .menu-items:nth-child(5n+1) .nav-link .menu-icon i {
-      color: #fc8b18; }
+    /* .sidebar .nav .menu-items:nth-child(5n+1) .nav-link .menu-icon i {
+      color: #0033c4; }
     .sidebar .nav .menu-items:nth-child(5n+2) .nav-link .menu-icon i {
-      color: #00d284; }
+      color: #0033c4; }
     .sidebar .nav .menu-items:nth-child(5n+3) .nav-link .menu-icon i {
-      color: #00cff4; }
+      color: #0033c4; }
     .sidebar .nav .menu-items:nth-child(5n+4) .nav-link .menu-icon i {
-      color: #ff5730; }
+      color: #0033c4; }
     .sidebar .nav .menu-items:nth-child(5n+5) .nav-link .menu-icon i {
-      color: #ff0854; }
+      color: #0033c4; } */
+    .sidebar .nav .menu-items:nth-child(n) .nav-link .menu-icon i {
+      color: #0033c4; }
 
 /* style for off-canvas menu*/
 @media screen and (max-width: 991px) {
