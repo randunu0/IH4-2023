@@ -47,11 +47,11 @@
     {% for chart in chart_page_content %}
 
     <div class="card">
-      <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" class="card-img-top" alt="{{chart_page_content[chart][0]}}">
+      <img src="{{chart_page_content[chart]['image']|safe}}" class="card-img-top" alt="Image: {{ chart_page_content[chart]['title'] }}">
       <div class="card-body">
-        <h5 class="card-title">{{chart_page_content[chart][0]}}</h5>
-        <p class="card-text">Description here: </p>
-        <p class="card-text"><small class="text-muted">{{chart_page_content[chart][2]}}</small></p>
+        <h5 class="card-title">{{chart_page_content[chart]["title"]}}</h5>
+        <p class="card-text">{{chart_page_content[chart]["short_description"]}}</p>
+        <p class="card-text"><small class="text-muted">Data updated every {{chart_page_content[chart]["refresh"]}}</small></p>
         <a href="{{ url_for('chart', chart_type=chart) }}" class="stretched-link"></a>
       </div>
     </div>

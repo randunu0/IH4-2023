@@ -54,54 +54,19 @@
           </li>
 
           <li class="nav-item nav-category">
-            <span class="nav-link">Dashboards</span>
+            <span class="nav-link">View Charts</span>
           </li>
 
-
+          {% for chart in chart_page_content %}
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ url_for('chart', chart_type='system-wide-demand') }}">
+            <a class="nav-link" href="{{ url_for('chart', chart_type=chart) }}">
               <span class="menu-icon">
-                <i class="mdi mdi-led-on"></i>
+                <i class="mdi {{chart_page_content[chart]['icon']}}"></i>
               </span>
-              <span class="menu-title">System Wide Demand</span>
+              <span class="menu-title">{{chart_page_content[chart]['menu_title']}}</span>
             </a>
           </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ url_for('chart', chart_type='fuel-type-generation') }}">
-              <span class="menu-icon">
-                <i class="mdi mdi-gas-cylinder"></i>
-              </span>
-              <span class="menu-title">Fuel Type Generation</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ url_for('chart', chart_type='system-frequency') }}">
-              <span class="menu-icon">
-                <i class="mdi mdi-pulse"></i>
-              </span>
-              <span class="menu-title">System Frequency</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ url_for('chart', chart_type='wind-and-pv') }}">
-              <span class="menu-icon">
-                <i class="mdi mdi-weather-sunny"></i>
-              </span>
-              <span class="menu-title">Wind and PV</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ url_for('chart', chart_type='electricity-prices') }}">
-              <span class="menu-icon">
-                <i class="mdi mdi-currency-usd"></i>
-              </span>
-              <span class="menu-title">Electricity Prices</span>
-            </a>
-          </li>          
+          {% endfor %}
 
         </ul>
       </nav>
