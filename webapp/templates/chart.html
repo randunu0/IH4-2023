@@ -35,7 +35,7 @@
     </ol>
   </nav>
   <div class="row">
-    <div class="col-lg-12 grid-margin stretch-card">
+    <div class="col-lg-12 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[0] }}</h3>
@@ -48,7 +48,7 @@
 
   {% if (page_content[0] == "Wind + PV Power Generation") %}
   <div class="row">
-    <div class="col-lg-6 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[2][0]|safe }}</h3>
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <div class="col-lg-6 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">{{ page_content[2][1]|safe }}</h3>
@@ -157,22 +157,12 @@
       label: "{{ page_content[2]|safe }}",
       data: js_chart_data,
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
+        'rgba(54, 162, 235, 0.2)'
       ],
       borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
+        'rgba(54, 162, 235, 1)'        
       ],
-      borderWidth: 1,
+      borderWidth: 2,
       fill: false
     }]
   };
@@ -189,18 +179,18 @@
           }
         },
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
         title: {
           display: true,
-          text: 'Time'
+          text: 'Date/Time'
         }
       },
       y: {
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
@@ -228,13 +218,13 @@
           type: 'line',
             yMin: 60,
               yMax: 60,
-                borderColor: 'rgb(54, 162, 235)',
+                borderColor: 'rgb(252, 139, 24)',
                   borderWidth: 2,
                     click: function({ chart, element }) {
                       console.log('Line annotation clicked');
                     },
           label: {
-            backgroundColor: 'grey',
+            backgroundColor: 'dark-grey',
               content: '60Hz',
                 enabled: true
           },
@@ -343,7 +333,7 @@
     */
     'use strict';
 
-    var js_chart_data = {{ chart_data }}
+  var js_chart_data = {{ chart_data }}
   var js_chart_labels = {{ chart_labels| safe }}
 
   var data = {
@@ -353,44 +343,24 @@
         label: "{{ page_content[2][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(54, 162, 235, 1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       },
       {
         label: "{{ page_content[2][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(255,99,132,1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -402,22 +372,12 @@
         label: "{{ page_content[2][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(54, 162, 235, 1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -429,22 +389,12 @@
         label: "{{ page_content[2][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+          'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+          'rgba(255,99,132,1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         fill: false
       }]
   };
@@ -457,18 +407,18 @@
           parser: "yyyy-MM-dd HH:mm"
         },
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
         title: {
           display: true,
-          text: 'Time'
+          text: 'Date/Time'
         }
       },
       y: {
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
@@ -618,10 +568,10 @@
         label: "Biomass",
         data: {{ chart_data["Biomass"] }},
         backgroundColor: [
-        'rgba(255, 99, 132, 0.2)'
+        'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)'
+          'rgba(54, 162, 235, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -630,10 +580,10 @@
         label: "Coal",
         data: {{ chart_data["Coal"] }},
         backgroundColor: [
-        'rgba(54, 162, 235, 0.2)'
+        'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-        'rgba(54, 162, 235, 1)'
+        'rgba(255, 99, 132, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -642,10 +592,10 @@
         label: "Gas",
         data: {{ chart_data["Gas"] }},
         backgroundColor: [
-        'rgba(255, 206, 86, 0.2)'
+        'rgba(252, 139, 24, 0.2)'
         ],
         borderColor: [
-        'rgba(255, 206, 86, 1)'
+        'rgba(252, 139, 24, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -654,10 +604,10 @@
         label: "Gas-CC",
         data: {{ chart_data["Gas-CC"] }},
         backgroundColor: [
-        'rgba(75, 192, 192, 0.2)'
+        'rgba(0, 210, 132, 0.2)'
         ],
         borderColor: [
-        'rgba(75, 192, 192, 1)'
+        'rgba(0, 210, 132, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -678,10 +628,10 @@
         label: "Nuclear",
         data: {{ chart_data["Nuclear"] }},
         backgroundColor: [
-        'rgba(255, 159, 64, 0.2)'
+        'rgba(12,132,166,0.2)'
         ],
         borderColor: [
-        'rgba(255, 159, 64, 1)'
+        'rgba(12,132,166,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -690,10 +640,10 @@
         label: "Other",
         data: {{ chart_data["Other"] }},
         backgroundColor: [
-        'rgba(255, 99, 132, 0.2)'
+        'rgba(141,221,208,0.2)'
         ],
         borderColor: [
-        'rgba(255, 99, 132, 1)'
+        'rgba(141,221,208,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -702,10 +652,10 @@
         label: "Solar",
         data: {{ chart_data["Solar"] }},
         backgroundColor: [
-        'rgba(54, 162, 235, 0.2)'
+        'rgba(111,78,123,0.2)'
         ],
         borderColor: [
-        'rgba(54, 162, 235, 1)'
+        'rgba(111,78,123,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -714,10 +664,10 @@
         label: "Wind",
         data: {{ chart_data["Wind"] }},
         backgroundColor: [
-        'rgba(255, 206, 86, 0.2)'
+        'rgba(201,71,47,0.2)'
         ],
         borderColor: [
-        'rgba(255, 206, 86, 1)'
+        'rgba(201,71,47,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -735,7 +685,7 @@
           }
         },
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
@@ -746,7 +696,7 @@
       },
       y: {
         grid: {
-          color: 'rgba(204,204,204,0.1)',
+          color: 'rgba(204,204,204,0.4)',
           borderColor: 'grey',
           tickColor: 'grey'
         },
@@ -925,10 +875,10 @@
         label: "Austin Energy",
         data: {{ chart_data["LZ_AEN"] }},
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)'
+        'rgba(54, 162, 235, 0.2)'
         ],
         borderColor: [
-          'rgba(255,99,132,1)'
+        'rgba(54, 162, 235, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -937,10 +887,10 @@
         label: "CPS Energy",
         data: {{ chart_data["LZ_CPS"] }},
         backgroundColor: [
-          'rgba(54, 162, 235, 0.2)'
+        'rgba(255, 99, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(54, 162, 235, 1)'
+        'rgba(255, 99, 132, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -949,16 +899,10 @@
         label: "Houston",
         data: {{ chart_data["LZ_HOUSTON"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(252, 139, 24, 0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(252, 139, 24, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -967,16 +911,10 @@
         label: "Lower Colorado River Authority (LCRA)",
         data: {{ chart_data["LZ_LCRA"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(0, 210, 132, 0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(0, 210, 132, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -985,16 +923,10 @@
         label: "North",
         data: {{ chart_data["LZ_NORTH"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(153, 102, 255, 0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(153, 102, 255, 1)'
         ],
         borderWidth: 1,
         fill: false
@@ -1003,16 +935,10 @@
         label: "Rayburn Electric Cooperative",
         data: {{ chart_data["LZ_RAYBN"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(12,132,166,0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(12,132,166,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -1021,16 +947,10 @@
         label: "South",
         data: {{ chart_data["LZ_SOUTH"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(141,221,208,0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(141,221,208,1)'
         ],
         borderWidth: 1,
         fill: false
@@ -1039,16 +959,10 @@
         label: "West",
         data: {{ chart_data["LZ_WEST"] }},
         backgroundColor: [
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
+        'rgba(111,78,123,0.2)'
         ],
         borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        'rgba(111,78,123,1)'
         ],
         borderWidth: 1,
         fill: false

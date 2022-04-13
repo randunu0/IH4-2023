@@ -7,10 +7,6 @@ application = app = Flask(__name__, static_url_path='', static_folder='')
 app.secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 app.url_map.strict_slashes = False
 
-@app.route("/")
-def home():
-    return render_template('home.html')
-
 # This dictionary is used to populate each page with content
 # Format is <URL>: [<Title>, <HTML Description>, <Units for Chart>]
 # For charts with multiple lines, the Units can be an array instead of a string
@@ -19,8 +15,8 @@ chart_page_content = {
     "fuel-type-generation": ["Generation by Fuel Type", "Generation by Fuel Type displays the real-time and historical power generation of the entire ERCOT grid, as well as the contributions by each distinct fuel source. To decide how to execute power generation for its grid, ERCOT uses an algorithm called Security Constrained Economic Dispatch (SCED) that calculates which combination of available power generators' offers (a.k.a. the amount of power a generator is willing to provide for a specific price) meets total generation requirements, results in the least total cost of dispatch (a.k.a. the actual execution of power delivery), and minimizes the total losses over the grid's web of transmission lines. Both datasets are in 15 minute intervals, with the stacked bar chart of the fuel source contributions being updated at the beginning of each month for the last month's data. <br/> <br/> <strong>Fun Fact:</strong> Texas is the largest energy-producer and energy-consumer in the US. It produces the most crude oil, natural gas and wind in the nation. <a href='https://www.eia.gov/state/?sid=TX#:~:text=Quick%20Facts&text=Texas%20leads%20the%20nation%20in,power%20plants%20combined%20in%202020'>Source</a> <br/><br/><a href='https://www.ercot.com/files/docs/2021/11/08/IntGenbyFuel2021.xlsx'>Data Source (2021)</a>, <a href='https://www.ercot.com/files/docs/2022/02/08/IntGenbyFuel2022.xlsx'>Data Source (2022)</a>", ["Generation in GWh (SEL)", "Generation in GWh (GFT)"]],
     "wind-and-pv": ["Wind + PV Power Generation", "Wind and Photovoltaic (PV) Power Generation displays the system-wide wind and photovoltaic power production. This data is updated every hour. <br/><br/> Photovoltaic Power Generation depends on four factors, namely: sun intensity, cloud cover, module temperature, and humidity. Most solar energy is collected when the sun is at its peak, which is usually midday. When it is a cloudy day, there is a decrease in power generation, because the cloud reflects some of the sun’s rays and limits the amount of sun absorption by the solar panels. However, solar cells work best at low temperatures so when the temperature is at its highest, typically during the summer, the heat causes the semiconductor properties to shift, which results in the panel’s performance reduction. Another factor is humidity because it can reduce solar power output by reflecting or refracting the sunlight away from solar cells, which reduces the amount of sunlight that hits the panels. When humidity penetrates the solar panel, it can also degrade the solar panel itself. <a href='https://www.sciencedirect.com/science/article/pii/S1364032111000256?casa_token=niTg6lWrHLcAAAAA:isUFaywvmhSpvOFR7PzvymGpu_CIiT7qyNA92qunCQKjl1T1U6ncgOvPc9DnWINXO3rgx-6UTrES'>Source 1</a>, <a href='https://www.renewablegreenenergypower.com/solar-energy/solar-panel-efficiency'>Source 2</a> <br/><br/> Wind power generation in an area depends on three factors: wind speed, air density, and weather temperature. A wind turbine is usually shut down when the wind speed is either below or above the cut-in values. When the wind speed is above the cut-in value, the wind turbine extracts the maximum amount of power. However, the relationship between wind speed and output power is not linearly proportional. Meanwhile, the energy produced by the wind is directly proportional to air density. The higher the air density, the larger the amount of power extracted from the wind turbines. Wind power generation is inversely proportional to temperature. The lower the weather temperature the larger the output power from the wind turbines. <a href= 'https://ieeexplore.ieee.org/document/8301377'>Source</a> <br/><br /><strong>Fun Fact:</strong> The ERCOT system had a record wind generation of 24,681 MW on December 23, 2021, and a record photovoltaic generation of 7,036 MW on August 3, 2021. (<a href='https://www.ercot.com/files/docs/2021/12/30/ERCOT_Fact_Sheet.pdf'>Source</a>) <br/><br/><a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=13028&amp;reportTitle=Wind%20Power%20Production%20-%20Hourly%20Averaged%20Actual%20and%20Forecasted%20Values&amp;showHTMLView=&amp;mimicKey'>Data Source (Wind)</a>, <a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=13483&amp;reportTitle=Solar%20Power%20Production%20-%20Hourly%20Averaged%20Actual%20and%20Forecasted%20Values&amp;showHTMLView=&amp;mimicKey'>Data Source (PV)</a>", ["Generation in MW (Wind)", "Generation in MW (PV)"]],
     "system-frequency": ["System Frequency", "System Frequency displays the grid electrical frequency, which is an important parameter that indicates the balance between generation and demand. In North America, 60 Hz is the default electrical frequency in power systems. If demand starts exceeding generation, the system frequency will fall below 60 Hz. If generation starts exceeding demand, the system frequency will rise above 60 Hz.<br/> <br/> When generation drops significantly below demand, it's important to prevent the system frequency from dropping below certain critical thresholds to avoid catastrophe. For instance, in the Texas winter storm in February 2021, the system frequency dropped below one such threshold, at 59.4 Hz. A protection scheme kicked into place and would have completely shut down the grid if the frequency remained under that threshold for 9 minutes. This is to prevent irreversible damage to the grid but unfortunately results in the complete collapse of the grid, which could have lasted for weeks. Fortunately, with 4 minutes and 37 seconds left to spare, the frequency was restored to safer levels above the threshold. <br/><br/> <a href='http://www.ercot.com/content/cdr/html/real_time_system_conditions.html'>Data Sources</a>", "Frequency in Hz (RTSC)"],
-    "electricity-prices": ["Real-Time Market Prices", "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price (SPP), which is an important measure that's calculated by ERCOT and used by electricity retailers to determine pricing plans for customers. SPPs are calculated with Locational Marginal Prices (LMPs), which are determined at each generator with ERCOT's SCED algorithm, plus additional operational costs for maintenance of constantly available power reserves that exist in case actual demand is much larger than forecasted demand. An important distinction is that SPPs are not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes. <br/><br/> <a href='https://www.ercot.com/misapp/GetReports.do?reportTypeId=12301&reportTitle=Settlement%20Point%20Prices%20at%20Resource%20Nodes,%20Hubs%20and%20Load%20Zones&showHTMLView=&mimicKey'>Data Sources</a>", "Load Zone Settlement Point Prices in $ (SMPP)"],
-   
+    "electricity-prices": ["Real-Time Market Prices", "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price (SPP), which is an important measure that's calculated by ERCOT and used by electricity retailers to determine pricing plans for customers. SPPs are calculated with Locational Marginal Prices (LMPs), which are determined at each generator with ERCOT's SCED algorithm, plus additional operational costs for maintenance of constantly available power reserves that exist in case actual demand is much larger than forecasted demand. An important distinction is that SPPs are not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes. <br/><br/> <a href='https://www.ercot.com/misapp/GetReports.do?reportTypeId=12301&reportTitle=Settlement%20Point%20Prices%20at%20Resource%20Nodes,%20Hubs%20and%20Load%20Zones&showHTMLView=&mimicKey'>Data Sources</a>", "Load Zone Settlement Point Prices in $ (SMPP)"]
+
     # "RTSL": ["Real Time System Load", "longer description here.", "units here"],
     # "RTSC": ["Real Time System Condition", "RTSC longer description to come", "units here"],
     # "SASC": ["System Ancilliary Service", "longer description to come", "units here"],
@@ -29,6 +25,11 @@ chart_page_content = {
     # "SWL": ["System Wide Load", "longer description to come", "units here"],
     # "WPP": ["Wind Power Production", "longer description to come", "units here"],
 }
+
+@app.route("/")
+def home():
+    return render_template('home.html', chart_page_content=chart_page_content)
+
 
 @app.route('/chart/<chart_type>', methods=["GET", "POST"])
 @app.route('/chart/<chart_type>/<start_date>/<end_date>', methods=["GET", "POST"])
@@ -52,7 +53,7 @@ def chart(chart_type=None, start_date=None, end_date=None):
                 end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
             return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
         else:
-            return render_template('home.html', error="Chart not found")
+            return render_template('home.html', error="Chart not found", chart_page_content=chart_page_content)
     if request.method == "POST":
         if chart_type in chart_page_content:
             start_date = request.form.get("start_date")
@@ -60,9 +61,9 @@ def chart(chart_type=None, start_date=None, end_date=None):
             chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
             return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
         else:
-            return render_template('home.html', error="Chart not found")
+            return render_template('home.html', error="Chart not found", chart_page_content=chart_page_content)
     else:
-        return render_template('home.html', error="Request method not valid")    
+        return render_template('home.html', error="Request method not valid", chart_page_content=chart_page_content)    
 
 @app.errorhandler(404)
 def FUN_404(error):
