@@ -1,11 +1,11 @@
 {% extends "template.html" %}
-{% block page_title %} {{ page_content[0] }} {% endblock %}
+{% block page_title %} {{ page_content["title"] }} {% endblock %}
 {% block main_panel %}
 {{ super() }}
 
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">{{ page_content[0] }}</h3>
+    <h3 class="page-title">{{ page_content["title"] }}</h3>
     <button type="button" onclick="download_csv()" class="btn btn-primary btn-icon-text"><i
         class="mdi mdi-download btn-icon-prepend"></i> Download Data </button>
   </div>
@@ -38,7 +38,7 @@
     <div class="col-lg-12 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
-          <h3 class="card-title">{{ page_content[0] }}</h3>
+          <h3 class="card-title">{{ page_content["title"] }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
           <canvas id="lineChart" style="height:250px"></canvas>
         </div>
@@ -46,12 +46,12 @@
     </div>
   </div>
 
-  {% if (page_content[0] == "Wind + PV Power Generation") %}
+  {% if (page_content["title"] == "Wind + PV Power Generation") %}
   <div class="row">
     <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
-          <h3 class="card-title">{{ page_content[2][0]|safe }}</h3>
+          <h3 class="card-title">{{ page_content['units'][0]|safe }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
           <canvas id="windChart" style="height:250px"></canvas>
         </div>
@@ -61,7 +61,7 @@
     <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
         <div class="card-body">
-          <h3 class="card-title">{{ page_content[2][1]|safe }}</h3>
+          <h3 class="card-title">{{ page_content['units'][1]|safe }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
           <canvas id="solarChart" style="height:250px"></canvas>
         </div>
@@ -71,12 +71,12 @@
   </div>
   {% endif %}
   
-  {% if (page_content[0] == "Generation by Fuel Type") %}
+  {% if (page_content["title"] == "Generation by Fuel Type") %}
   <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h3 class="card-title">{{ page_content[2] }}</h3>
+          <h3 class="card-title">{{ page_content['units'] }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
           <canvas id="barChart" style="height:250px"></canvas>
         </div>
@@ -86,7 +86,7 @@
   </div>
   {% endif %}
 
-  {% if (page_content[0] == "Real-Time Market Prices") %}
+  {% if (page_content["title"] == "Real-Time Market Prices") %}
   <div class="row">
     <div class="col-lg-6 grid-margin stretch-card">
       <div class="card">
@@ -100,8 +100,8 @@
     <div class="col-lg-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">{{ page_content[0] }} Description</h4>
-          <p>{{ page_content[1]|safe }}</p>
+          <h4 class="card-title">{{ page_content["title"] }} Description</h4>
+          <p>{{ page_content["html_description"]|safe }}</p>
         </div>
       </div>
     </div>
@@ -111,8 +111,8 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">{{ page_content[0] }} Description</h4>
-          <p>{{ page_content[1]|safe }}</p>
+          <h4 class="card-title">{{ page_content["title"] }} Description</h4>
+          <p>{{ page_content["html_description"]|safe }}</p>
         </div>
       </div>
     </div>
@@ -131,12 +131,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script
   src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-{% if (page_content[0] == "System Frequency") %}
+{% if (page_content["title"] == "System Frequency") %}
 <script src="{{ url_for('static', filename='assets/vendors/chart.js/chartjs-plugin-annotation.min.js') }}"></script>
 {% endif %}
 <!-- End plugin js for this page -->
 
-{% if ((page_content[0] != "Wind + PV Power Generation") and (page_content[0] != "Generation by Fuel Type") and (page_content[0] != "Real-Time Market Prices")) %}
+{% if ((page_content["title"] != "Wind + PV Power Generation") and (page_content["title"] != "Generation by Fuel Type") and (page_content["title"] != "Real-Time Market Prices")) %}
 
 <!-- CHART js for this page -->
 <script>
@@ -154,7 +154,7 @@
   var data = {
     labels: js_chart_labels,
     datasets: [{
-      label: "{{ page_content[2]|safe }}",
+      label: "{{ page_content['units']|safe }}",
       data: js_chart_data,
       backgroundColor: [
         'rgba(54, 162, 235, 0.2)'
@@ -196,7 +196,7 @@
         },
         title: {
           display: true,
-          text: '{{ page_content[2]|safe }}'
+          text: '{{ page_content['units']|safe }}'
         }
       }
     },
@@ -210,7 +210,7 @@
       mode: 'nearest',
       animationDuration: 0
     },
-    {% if (page_content[0] == "System Frequency") %}
+    {% if (page_content["title"] == "System Frequency") %}
   plugins: {
     annotation: {
       annotations: {
@@ -294,8 +294,8 @@
 
   function download_csv() {
     var csv = '';
-    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content[0]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
-    var csv_header = 'Date,Time (US Central Time),{{ page_content[2]|safe }}\n';
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_header = 'Date,Time (US Central Time),{{ page_content['units']|safe }}\n';
 
     csv += csv_credits;
     csv += csv_header;
@@ -313,7 +313,7 @@
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'TGA-{{ page_content[0] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
     hiddenElement.click();
   }
 
@@ -322,7 +322,7 @@
 
 {% endif %}
 
-{% if (page_content[0] == "Wind + PV Power Generation") %}
+{% if (page_content["title"] == "Wind + PV Power Generation") %}
 
 <!-- CHART js for this page -->
 <script>
@@ -340,7 +340,7 @@
     labels: js_chart_labels,
     datasets: [
       {
-        label: "{{ page_content[2][0]|safe }}",
+        label: "{{ page_content['units'][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
           'rgba(54, 162, 235, 0.2)'
@@ -352,7 +352,7 @@
         fill: false
       },
       {
-        label: "{{ page_content[2][1]|safe }}",
+        label: "{{ page_content['units'][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)'
@@ -369,7 +369,7 @@
     labels: js_chart_labels,
     datasets: [
       {
-        label: "{{ page_content[2][0]|safe }}",
+        label: "{{ page_content['units'][0]|safe }}",
         data: js_chart_data[0],
         backgroundColor: [
           'rgba(54, 162, 235, 0.2)'
@@ -386,7 +386,7 @@
     labels: js_chart_labels,
     datasets: [
       {
-        label: "{{ page_content[2][1]|safe }}",
+        label: "{{ page_content['units'][1]|safe }}",
         data: js_chart_data[1],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)'
@@ -404,7 +404,10 @@
       x: {
         type: 'time',
         time: {
-          parser: "yyyy-MM-dd HH:mm"
+          parser: "yyyy-MM-dd HH:mm",
+          displayFormats: {
+            hour: "MMM d, h a"
+          }
         },
         grid: {
           color: 'rgba(204,204,204,0.4)',
@@ -517,8 +520,8 @@
 
   function download_csv() {
     var csv = '';
-    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content[0]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
-    var csv_header = 'Date,Time (US Central Time),{{ page_content[2][0]|safe }},{{ page_content[2][1]|safe }}\n';
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_header = "Date,Time (US Central Time),{{ page_content['units'][0]|safe }},{{ page_content['units'][1]|safe }}\n";
 
     csv += csv_credits;
     csv += csv_header;
@@ -537,7 +540,7 @@
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'TGA-{{ page_content[0] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
     hiddenElement.click();
   }
 
@@ -546,7 +549,7 @@
 
 {% endif %}
 
-{% if (page_content[0] == "Generation by Fuel Type") %}
+{% if (page_content["title"] == "Generation by Fuel Type") %}
 
 <!-- CHART js for this page -->
 <script>
@@ -702,7 +705,7 @@
         },
         title: {
           display: true,
-          text: '{{ page_content[2]|safe }}'
+          text: '{{ page_content['units']|safe }}'
         }
       }
     },
@@ -818,7 +821,7 @@
 
   function download_csv() {
     var csv = '';
-    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content[0]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
     var csv_header = 'Date,Time (US Central Time),Biomass,Coal,Gas,Gas-CC,Hydro,Nuclear,Other,Solar,Wind\n';
 
     csv += csv_credits;
@@ -845,7 +848,7 @@
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'TGA-{{ page_content[0] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
     hiddenElement.click();
   }
 
@@ -854,7 +857,7 @@
 
 {% endif %}
 
-{% if (page_content[0] == "Real-Time Market Prices") %}
+{% if (page_content["title"] == "Real-Time Market Prices") %}
 
 <!-- CHART js for this page -->
 <script>
@@ -999,7 +1002,7 @@
         },
         title: {
           display: true,
-          text: '{{ page_content[2]|safe }}'
+          text: '{{ page_content['units']|safe }}'
         }
       }
     },
@@ -1073,7 +1076,7 @@
 
   function download_csv() {
     var csv = '';
-    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content[0]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
     var csv_header = 'Date,Time (US Central Time),LZ_AEN,LZ_CPS,LZ_HOUSTON,LZ_LCRA,LZ_NORTH,LZ_RAYBN,LZ_SOUTH,LZ_WEST\n';
 
     csv += csv_credits;
@@ -1099,7 +1102,7 @@
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'TGA-{{ page_content[0] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
     hiddenElement.click();
   }
 
