@@ -14,7 +14,7 @@ chart_page_content = {
     "system-wide-demand": {
         "title": "System-Wide Demand",
         "menu_title": "System Wide Demand",
-        "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+        "image": "https://images.unsplash.com/photo-1413882353314-73389f63b6fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
         "icon": "mdi-led-on",
         "units": "Demand in GW (SWD)",
         "refresh": "5 minutes",
@@ -24,7 +24,7 @@ chart_page_content = {
     "fuel-type-generation": {
         "title": "Generation by Fuel Type",
         "menu_title": "Fuel Type Generation",
-        "image": "",
+        "image": "https://images.unsplash.com/photo-1481127303226-3f47f8af862d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-gas-cylinder",
         "units": "Generation in GWh (SEL)",
         "refresh": "15 minutes",
@@ -34,7 +34,7 @@ chart_page_content = {
     "system-frequency": {
         "title": "System Frequency",
         "menu_title": "System Frequency",
-        "image": "",
+        "image": "https://images.unsplash.com/photo-1609669371960-f5f046c8e9e2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-pulse",
         "units": "Frequency in Hz",
         "refresh": "1 minute",
@@ -44,7 +44,7 @@ chart_page_content = {
     "wind-and-pv": {
         "title": "Wind + PV Power Generation",
         "menu_title": "Wind and Photovolaic",
-        "image": "",
+        "image": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-weather-sunny",
         "units": ["Generation in MW (Wind)", "Generation in MW (PV)"],
         "refresh": "5 minutes",
@@ -55,7 +55,7 @@ chart_page_content = {
     "electricity-prices": {
         "title": "Real-Time Market Prices",
         "menu_title": "Market Prices",
-        "image": "",
+        "image": "https://images.unsplash.com/photo-1611187401884-254eb9d99ed6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-currency-usd",
         "units": "Load Zone Settlement Point Prices in $ (SMPP)",
         "refresh": "15 minutes",
