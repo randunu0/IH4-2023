@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  {% if (page_content[0] == "Wind + Solar Power Generation") %}
+  {% if (page_content[0] == "Wind + PV Power Generation") %}
   <div class="row">
     <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
       <div class="card">
@@ -86,6 +86,27 @@
   </div>
   {% endif %}
 
+  {% if (page_content[0] == "Real-Time Market Prices") %}
+  <div class="row">
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Load Zone Map</h4>
+          <p>A Load Zone is a group of Electrical Buses. Every Electrical Bus in ERCOT with a Load must be assigned to a Load Zone for Settlement purposes. The above map depicts the geographic boundaries of each Load Zone.</p>
+        </div>
+        <img class="card-img-top" alt="ERCOT Load Zone Map" src="https://www.ercot.com/files/docs/2021/06/01/Load-Zone-Map_2021.jpg">
+      </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">{{ page_content[0] }} Description</h4>
+          <p>{{ page_content[1]|safe }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
   <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
@@ -96,7 +117,9 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
+  
 
 {% endblock %}
 
@@ -113,7 +136,7 @@
 {% endif %}
 <!-- End plugin js for this page -->
 
-{% if ((page_content[0] != "Wind + Solar Power Generation") and (page_content[0] != "Generation by Fuel Type") and (page_content[0] != "Real-Time Market Prices")) %}
+{% if ((page_content[0] != "Wind + PV Power Generation") and (page_content[0] != "Generation by Fuel Type") and (page_content[0] != "Real-Time Market Prices")) %}
 
 <!-- CHART js for this page -->
 <script>
@@ -299,7 +322,7 @@
 
 {% endif %}
 
-{% if (page_content[0] == "Wind + Solar Power Generation") %}
+{% if (page_content[0] == "Wind + PV Power Generation") %}
 
 <!-- CHART js for this page -->
 <script>
@@ -849,7 +872,7 @@
     labels: js_chart_labels,
     datasets: [
     {
-        label: "AEN ?",
+        label: "Austin Energy",
         data: {{ chart_data["LZ_AEN"] }},
         backgroundColor: [
         'rgba(54, 162, 235, 0.2)'
@@ -861,7 +884,7 @@
         fill: false
       },
       {
-        label: "CPS ?",
+        label: "CPS Energy",
         data: {{ chart_data["LZ_CPS"] }},
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)'
@@ -885,7 +908,7 @@
         fill: false
       },
       {
-        label: "LCRA ?",
+        label: "Lower Colorado River Authority (LCRA)",
         data: {{ chart_data["LZ_LCRA"] }},
         backgroundColor: [
         'rgba(0, 210, 132, 0.2)'
@@ -909,7 +932,7 @@
         fill: false
       },
       {
-        label: "RAYBN ?",
+        label: "Rayburn Electric Cooperative",
         data: {{ chart_data["LZ_RAYBN"] }},
         backgroundColor: [
         'rgba(12,132,166,0.2)'
