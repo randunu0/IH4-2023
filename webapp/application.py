@@ -7,6 +7,14 @@ application = app = Flask(__name__, static_url_path='', static_folder='')
 app.secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 app.url_map.strict_slashes = False
 
+@app.before_request
+def before_request_secure():
+    scheme = request.headers.get('X-Forwarded-Proto')
+    if scheme and scheme == 'http' and request.url.startswith('http://'):
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
+
 # This dictionary is used to populate each page with content
 # Format is <URL>: {<Title>, <Menu Title (shorter)>, <Image>, <Icon>, <Units for Chart>, <Data Refresh Rate>, <Short Description>, <Longer HTML Description>}
 # For charts with multiple lines, the Units are an array instead of a string
