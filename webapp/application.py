@@ -66,7 +66,7 @@ chart_page_content = {
         "image": "https://images.unsplash.com/photo-1611187401884-254eb9d99ed6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-currency-usd",
         "units": "Load Zone Settlement Point Prices in $/MWh (SMPP)",
-        "refresh": "15 minutes",
+        "refresh": "1 month",
         "short_description": "",
         "html_description": "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price (SPP), which is an important measure that's calculated by ERCOT and used by electricity retailers to determine pricing plans for customers. SPPs are calculated with Locational Marginal Prices (LMPs), which are determined at each generator with ERCOT's SCED algorithm, plus additional operational costs for maintenance of constantly available power reserves that exist in case actual demand is much larger than forecasted demand. An important distinction is that SPPs are not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes. <br/><br/> <a href='https://www.ercot.com/misapp/GetReports.do?reportTypeId=12301&reportTitle=Settlement%20Point%20Prices%20at%20Resource%20Nodes,%20Hubs%20and%20Load%20Zones&showHTMLView=&mimicKey'>Data Sources</a>"
     }
