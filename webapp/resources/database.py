@@ -46,9 +46,9 @@ def get_chart(chart_type, start_date, end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
         else:
-            # DEFAULT VIEW: one week
+            # DEFAULT VIEW: two weeks
             end_date = df.iloc[-1].get('OperatingDay')
-            start_date = end_date - pd.Timedelta(days=7)
+            start_date = end_date - pd.Timedelta(days=14)
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]                        
         ch_data_mw = df["Demand"].tolist()
@@ -117,7 +117,7 @@ def get_chart(chart_type, start_date, end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
         else:
-            # DEFAULT VIEW: one week
+            # DEFAULT VIEW: one day
             end_date = df.iloc[-1].get('OperatingDay')
             start_date = end_date - pd.Timedelta(days=1)
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
@@ -134,9 +134,9 @@ def get_chart(chart_type, start_date, end_date):
         return ch_data, ch_labels
     
     # -----------------------------------
-    # Wind and Solar
+    # Wind and PV
     # -----------------------------------
-    if chart_type == "wind-and-solar":
+    if chart_type == "wind-and-pv":
         df = pd.read_sql_table("SPP", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
@@ -191,9 +191,9 @@ def get_chart(chart_type, start_date, end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
         else:
-            # DEFAULT VIEW: one week
+            # DEFAULT VIEW: one day
             end_date = df.iloc[-1].get('OperatingDay')
-            start_date = end_date - pd.Timedelta(days=7)
+            start_date = end_date - pd.Timedelta(days=1)
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         
