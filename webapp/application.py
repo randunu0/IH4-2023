@@ -120,5 +120,10 @@ def chart(chart_type=None, start_date=None, end_date=None):
 def FUN_404(error):
     return render_template("404.html"), 404
 
+
+@app.errorhandler(500)
+def FUN_500(error):
+    return render_template("500.html"), 500
+
 if __name__ == '__main__':
     app.run(debug=True, host='localhost', port=5001)
