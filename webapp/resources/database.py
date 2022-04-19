@@ -68,7 +68,7 @@ def get_chart(chart_type, start_date, end_date):
     # TODO align graph to preferred view
     # -----------------------------------
     if chart_type == "fuel-type-generation":
-        df = pd.read_sql_table("GFT", connection)
+        df = pd.read_sql_table("GBFT", connection)
         if (start_date and end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
