@@ -35,7 +35,7 @@ chart_page_content = {
         "image": "https://images.unsplash.com/photo-1481127303226-3f47f8af862d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-gas-cylinder",
         "units": "Generation in GWh (SEL)",
-        "refresh": "15 minutes",
+        "refresh": "month",
         "short_description": "",
         "html_description": "Generation by Fuel Type displays the real-time and historical power generation of the entire ERCOT grid, as well as the contributions by each distinct fuel source. To decide how to execute power generation for its grid, ERCOT uses an algorithm called Security Constrained Economic Dispatch (SCED) that calculates which combination of available power generators' offers (a.k.a. the amount of power a generator is willing to provide for a specific price) meets total generation requirements, results in the least total cost of dispatch (a.k.a. the actual execution of power delivery), and minimizes the total losses over the grid's web of transmission lines. Both datasets are in 15 minute intervals, with the stacked bar chart of the fuel source contributions being updated at the beginning of each month for the last month's data. <br/> <br/> <strong>Fun Fact:</strong> Texas is the largest energy-producer and energy-consumer in the US. It produces the most crude oil, natural gas and wind in the nation. (<a href='https://www.eia.gov/state/?sid=TX#:~:text=Quick%20Facts&text=Texas%20leads%20the%20nation%20in,power%20plants%20combined%20in%202020'>Source</a>) <br/><br/><a href='https://www.ercot.com/files/docs/2021/11/08/IntGenbyFuel2021.xlsx'>Data Source (2021)</a>, <a href='https://www.ercot.com/files/docs/2022/02/08/IntGenbyFuel2022.xlsx'>Data Source (2022)</a>"
     },
@@ -66,7 +66,7 @@ chart_page_content = {
         "image": "https://images.unsplash.com/photo-1611187401884-254eb9d99ed6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
         "icon": "mdi-currency-usd",
         "units": "Load Zone Settlement Point Prices in $/MWh (SMPP)",
-        "refresh": "month",
+        "refresh": "15 minutes",
         "short_description": "",
         "html_description": "Real-Time Market Prices displays a critical electricity pricing metric called the Settlement Point Price (SPP), which is an important measure that's calculated by ERCOT and used by electricity retailers to determine pricing plans for customers. SPPs are calculated with Locational Marginal Prices (LMPs), which are determined at each generator with ERCOT's SCED algorithm, plus additional operational costs for maintenance of constantly available power reserves that exist in case actual demand is much larger than forecasted demand. An important distinction is that SPPs are not an exact measurement of any specific customer's electricity price, but is rather a closely related value that approximates the changes in customers' actual electricity prices depending on location and retail electricity provider. This data is updated every 15 minutes. <br/><br/> <a href='https://www.ercot.com/misapp/GetReports.do?reportTypeId=12301&reportTitle=Settlement%20Point%20Prices%20at%20Resource%20Nodes,%20Hubs%20and%20Load%20Zones&showHTMLView=&mimicKey'>Data Sources</a>"
     }
