@@ -65,7 +65,7 @@ def get_chart(chart_type, start_date, end_date):
 
     # -----------------------------------
     # Fuel Type Generation
-    # TODO align graph to preferred view
+    # TODO Download Fewer Data Points
     # -----------------------------------
     if chart_type == "fuel-type-generation":
         df = pd.read_sql_table("GBFT", connection)
@@ -79,22 +79,18 @@ def get_chart(chart_type, start_date, end_date):
             df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
             df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         
-        df = df.sort_values(by=['Fuel', 'OperatingDay', 'HourEnding'])
-
-        df = df.pivot(index=['OperatingDay','HourEnding'], columns=['Fuel'], values=['Generation'])
-        df.reset_index(inplace=True)
-        print(df)
+        df = df.sort_values(by=['OperatingDay', 'HourEnding'])
 
         ch_data = {
-            "Biomass": df["Generation"]["Biomass"].tolist(),
-            "Coal": df["Generation"]["Coal"].tolist(),
-            "Gas": df["Generation"]["Gas"].tolist(),
-            "Gas-CC": df["Generation"]["Gas-CC"].tolist(),
-            "Hydro": df["Generation"]["Hydro"].tolist(),
-            "Nuclear": df["Generation"]["Nuclear"].tolist(),
-            "Other": df["Generation"]["Other"].tolist(),
-            "Solar": df["Generation"]["Solar"].tolist(),
-            "Wind": df["Generation"]["Wind"].tolist()
+            "Biomass": df["Biomass"].tolist(),
+            "Coal": df["Coal"].tolist(),
+            "Gas": df["Gas"].tolist(),
+            "Gas-CC": df["Gas-CC"].tolist(),
+            "Hydro": df["Hydro"].tolist(),
+            "Nuclear": df["Nuclear"].tolist(),
+            "Other": df["Other"].tolist(),
+            "Solar": df["Solar"].tolist(),
+            "Wind": df["Wind"].tolist()
         }
 
         ch_days = df['OperatingDay'].tolist()
