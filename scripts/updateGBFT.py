@@ -5,9 +5,10 @@ import requests
 import os
 import glob
 import sqlalchemy
+from dotenv import load_dotenv
 
 def main():
-
+    load_dotenv(dotenv_path="../.env")
     r = requests.get('https://www.ercot.com/gridinfo/generation', allow_redirects=True)
     soup = BeautifulSoup(r.content, "html.parser")
     
@@ -74,11 +75,11 @@ def main():
     res.columns = res.columns.droplevel(level=0)
     res.columns = ['OperatingDay', 'HourEnding', 'Biomass', 'Coal', 'Gas', 'Gas-CC', 'Hydro', 'Nuclear', 'Other', 'Solar', 'Wind']
 
-    db_username = "admin"
-    db_pswrd = "dvqLt7v635tuf9Bf"
-    db_ip = "txgridanalytics-database.c3xnwzdtzngd.us-east-2.rds.amazonaws.com"
-    dp_name = "GRID_ANALYTICS"
-    db_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.format(db_username, db_pswrd, db_ip, dp_name))
+    database_username = os.getenv("DB_USERNAME")
+    database_password = os.getenv("DB_PASSWORD")
+    database_ip = os.getenv("DB_IP")
+    database_name = os.getenv("DB_NAME")
+    db_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.format(database_username, database_password, database_ip, database_name))
 
     connection = db_connection.connect() 
 

@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import sqlalchemy
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
 def scrapeWeb(link):
     url = link
@@ -23,11 +25,13 @@ def scrapeWeb(link):
     return time, entries
 
 def updateWebTable(table, link):
+    load_dotenv(dotenv_path="../.env")
+
     #connecting to sqlalchemy
-    database_username = "admin"
-    database_password = "dvqLt7v635tuf9Bf"
-    database_ip = "txgridanalytics-database.c3xnwzdtzngd.us-east-2.rds.amazonaws.com"
-    database_name = "GRID_ANALYTICS"
+    database_username = os.getenv("DB_USERNAME")
+    database_password = os.getenv("DB_PASSWORD")
+    database_ip = os.getenv("DB_IP")
+    database_name = os.getenv("DB_NAME")
     #port = "3306"
     database_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.
                                                    format(database_username, database_password, 
