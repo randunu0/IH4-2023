@@ -11,7 +11,7 @@ git clone https://github.com/shaniljasani/TexasGridAnalytics-SeniorDesign.git
 cd TexasGridAnalytics-SeniorDesign/webapp
 ```
 ### Step 2: Add a `.env` File
-Use the `.env_EXAMPLE` file template to create a `.env` file. Add your `Database access keys` to the file. *This is an important step to ensure data is properly collected from the database*
+Use the `.env_EXAMPLE` file template to create a `.env` file. Add your database access credentials to the file. *This is an important step to ensure data is properly collected from the database*
 
 ### Step 3: Set up a Python Virtual Environment in Directory
 

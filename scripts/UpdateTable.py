@@ -8,6 +8,9 @@ from UnzipFiles import Unzip
 import shutil
 from dotenv import load_dotenv
 
+import os
+from dotenv import load_dotenv
+
 # updateTable(table, source)
 #   Input:  Table = Name of the table to update
 #           Source = ERCOT URL
@@ -19,8 +22,10 @@ from dotenv import load_dotenv
 
 
 def updateTable(table, source):
-    #connecting to sqlalchemy
+    # import enviornment variables
     load_dotenv(dotenv_path="../.env")
+
+    #connecting to sqlalchemy
     database_username = os.getenv("DB_USERNAME")
     database_password = os.getenv("DB_PASSWORD")
     database_ip = os.getenv("DB_IP")

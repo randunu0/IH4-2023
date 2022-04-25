@@ -1,6 +1,7 @@
 import pandas as pd
 import sqlalchemy
 import datetime
+import os
 
 def combine_date_time_24bug(date, time):
     combined = []
@@ -27,11 +28,11 @@ def convert_date_time(dates, times):
 def get_chart(chart_type, start_date, end_date):
 
     #connecting to sqlalchemy
-    database_username = "admin"
-    database_password = "dvqLt7v635tuf9Bf"
-    database_ip = "txgridanalytics-database.c3xnwzdtzngd.us-east-2.rds.amazonaws.com"
-    database_name = "GRID_ANALYTICS"
-    #port = "3306"
+    database_username = os.getenv("DB_USERNAME")
+    database_password = os.getenv("DB_PASSWORD")
+    database_ip = os.getenv("DB_IP")
+    database_name = os.getenv("DB_NAME")
+    #port = os.getenv("DB_PORT")
     database_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.
                                                    format(database_username, database_password, 
                                                           database_ip, database_name))

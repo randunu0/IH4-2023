@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
+# import enviornment variables
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="../.env")
+
 from resources.database import get_chart
 
 application = app = Flask(__name__, static_url_path='', static_folder='')
-app.secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+app.secret_key = os.getenv("APP_SECRET")
 app.url_map.strict_slashes = False
 
 @app.before_request

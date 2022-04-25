@@ -25,6 +25,7 @@ def scrapeWeb(link):
     return time, entries
 
 def updateWebTable(table, link):
+    # import enviornment variables
     load_dotenv(dotenv_path="../.env")
 
     #connecting to sqlalchemy
@@ -32,7 +33,7 @@ def updateWebTable(table, link):
     database_password = os.getenv("DB_PASSWORD")
     database_ip = os.getenv("DB_IP")
     database_name = os.getenv("DB_NAME")
-    #port = "3306"
+    #port = os.getenv("DB_PORT")
     database_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.
                                                    format(database_username, database_password, 
                                                           database_ip, database_name))
