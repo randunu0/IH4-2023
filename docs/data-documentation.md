@@ -48,6 +48,7 @@ The following tables utilize AWS Lambda to fetch data from the ERCOT website and
 The data for these tables are found under the misapp subdomain of the ERCOT website and stored as .csv and .xml files. We utilize AWS Lambda to periodically scrape the respective websites for recent data, parse the data into the format that is compatible with our database, and append the new data into their respective tables.
 
 The update frequencies are as follows:
+
 1 Hour:
 * SEL: State Estimator Load
 * SWD: System-Wide Demand
