@@ -23,9 +23,20 @@ This will create a file called `requirements.txt` in the `webapp` directory.
 ```
 This will create a file called `txgridanalytics-DATE.zip` in the `build` directory.
 
-### Step 4: Upload and Deploy
+### Step 4: Update your Environment Variables on AWS
 
-1. Navigate to your AWS Elastic Beanstalk application page.
+Your local `.env` file contains important environment variables crucial to the success of the code. The AWS Elastic Beanstalk environment uses a configuration page on the GUI to pass these. To view and edit these on AWS:
+
+1. Navigate to your AWS Elastic Beanstalk environment page
+2. Visit the `Configuration` pane
+3. In the `Software` category, choose `Edit`
+4. Under `Modify Software`, the `Environment properties` section lists the environment properties
+
+[Source](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html)
+
+### Step 5: Upload and Deploy
+
+1. Navigate to your AWS Elastic Beanstalk environment page
 2. Click on `Upload and Deploy`
 3. Upload your newly-created `txgridanalytics-DATE.zip` file
 
