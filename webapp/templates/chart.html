@@ -41,6 +41,9 @@
           <h3 class="card-title">{{ page_content["title"] }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
           <canvas id="lineChart" style="height:250px"></canvas>
+          {% if (page_content["title"] == "System Frequency") %}
+          <p>A guideline (in orange) is placed at 60.00 Hz, the default electrical frequency in power systems.</p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -220,17 +223,14 @@
       annotations: {
         sixty: {
           type: 'line',
-            yMin: 60,
-              yMax: 60,
-                borderColor: 'rgb(252, 139, 24)',
-                  borderWidth: 2,
-                    click: function({ chart, element }) {
-                      console.log('Line annotation clicked');
-                    }
+          yMin: 60,
+          yMax: 60,
+          borderColor: 'rgb(252, 139, 24)',
+          borderWidth: 2,
           label: {
             backgroundColor: 'dark-grey',
-              content: '60Hz',
-              enabled: false
+            content: '60Hz',
+            enabled: false
           }
         }
       }
