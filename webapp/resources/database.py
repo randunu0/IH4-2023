@@ -1,7 +1,12 @@
+from time import strftime
 import pandas as pd
 import sqlalchemy
 import datetime
 import os
+
+def td_to_dt(td):
+    time = [str(td.components.hours), str(td.components.minutes), str(td.components.seconds)]
+    return datetime.datetime.strptime(':'.join(time), '%H:%M:%S').time()
 
 def combine_date_time_24bug(date, time):
     combined = []
@@ -42,44 +47,46 @@ def get_chart(chart_type, start_date, end_date):
     # System Wide Demand
     # -----------------------------------
     if chart_type == "system-wide-demand":
-        df = pd.read_sql_table("SWD", connection)
         if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
-            # DEFAULT VIEW: two weeks
+            query = """SELECT * FROM GRID_ANALYTICS.SWD ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
             end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: two weeks
             start_date = end_date - pd.Timedelta(days=14)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]                        
+            query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)
+        
         ch_data_mw = df["Demand"].tolist()
         ch_data = [entry / 1000 for entry in ch_data_mw]
-        ch_days = df['OperatingDay'].tolist()
-        ch_times = df['HourEnding'].tolist()
-
-        ch_days_dt = []
-        for day in ch_days:
-            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
         
-        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
+        ch_times = df['HourEnding'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+
+        ch_labels = combine_date_time(ch_days, ch_times)
         return ch_data, ch_labels
 
     # -----------------------------------
     # Fuel Type Generation
-    # TODO Download Fewer Data Points
+    # TODO Decimate
     # -----------------------------------
     if chart_type == "fuel-type-generation":
-        df = pd.read_sql_table("GBFT", connection)
         if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
-            # DEFAULT VIEW: one week
+            query = """SELECT * FROM GRID_ANALYTICS.GBFT ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
             end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one week
             start_date = end_date - pd.Timedelta(days=7)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
-        
+            query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)        
         df = df.sort_values(by=['OperatingDay', 'HourEnding'])
 
         ch_data = {
@@ -94,14 +101,11 @@ def get_chart(chart_type, start_date, end_date):
             "Wind": df["Wind"].tolist()
         }
 
-        ch_days = df['OperatingDay'].tolist()
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
         ch_times = df['HourEnding'].tolist()
-
-        ch_days_dt = []
-        for day in ch_days:
-            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        ch_days = df['OperatingDay'].tolist()
         
-        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        ch_labels = combine_date_time_24bug(ch_days, ch_times)
         return ch_data, ch_labels
 
     # -----------------------------------
@@ -109,91 +113,88 @@ def get_chart(chart_type, start_date, end_date):
     # TODO hour selector
     # -----------------------------------
     if chart_type == "system-frequency":
-        df = pd.read_sql_table("RTSC", connection)
         if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
-            # DEFAULT VIEW: one day
+            query = """SELECT * FROM GRID_ANALYTICS.RTSC ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
             end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one day
             start_date = end_date - pd.Timedelta(days=1)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
-        ch_data = df["CurrentFrequency"].tolist()
-        ch_days = df['OperatingDay'].tolist()
-        ch_times = df['HourEnding'].tolist()
+            query = """SELECT * FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)
 
-        ch_days_dt = []
-        for day in ch_days:
-            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        ch_data = df["CurrentFrequency"].tolist()
+
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
+        ch_times = df['HourEnding'].tolist()
+        ch_days = df['OperatingDay'].tolist()
         
-        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        ch_labels = combine_date_time(ch_days, ch_times)
         return ch_data, ch_labels
     
     # -----------------------------------
     # Wind and PV
     # -----------------------------------
     if chart_type == "wind-and-pv":
-        df = pd.read_sql_table("SPP", connection)
         if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
-            # DEFAULT VIEW: one week
+            query = """SELECT * FROM GRID_ANALYTICS.SPP ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
             end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one week
             start_date = end_date - pd.Timedelta(days=7)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
-        solar_data = df['SystemWide'].tolist()
+            query = """SELECT * FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)
 
-        # Solar Times are the same as Wind Times so disregard one
-        # solar_days = df['OperatingDay'].tolist()
-        # solar_times = df['HourEnding'].tolist()
+        pv_data = df['SystemWide'].tolist()
+        # PV Times are the same as Wind Times so disregard one or the other
 
-        # solar_days_dt = []
-        # for day in solar_days:
-        #     solar_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        if (start_date and end_date):
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        else:
+            query = """SELECT * FROM GRID_ANALYTICS.WPP ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
+            end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one week
+            start_date = end_date - pd.Timedelta(days=7)
+            query = """SELECT * FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)
         
-        # solar_labels = combine_date_time(solar_days_dt, solar_times)
-
-        df = pd.read_sql_table("WPP", connection)
-        if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
-        else:
-            # DEFAULT VIEW: one week
-            end_date = df.iloc[-1].get('OperatingDay')
-            start_date = end_date - pd.Timedelta(days=7)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
         wind_data = df['SystemWide'].tolist()
-        wind_days = df['OperatingDay'].tolist()
+
+
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
         wind_times = df['HourEnding'].tolist()
+        wind_days = df['OperatingDay'].tolist()
 
-        wind_days_dt = []
-        for day in wind_days:
-            wind_days_dt.append(pd.Timestamp.to_pydatetime(day))
-        
-        wind_labels = combine_date_time(wind_days_dt, wind_times)
-
-
-        return [wind_data, solar_data], wind_labels
+        wind_labels = combine_date_time(wind_days, wind_times)
+        return [wind_data, pv_data], wind_labels
 
     # -----------------------------------
     # Electricity Prices
     # -----------------------------------
     if chart_type == "electricity-prices":
-        df = pd.read_sql_table("SMPP_LZ", connection)
         if (start_date and end_date):
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)]
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
-            # DEFAULT VIEW: one day
+            query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(query, connection)
             end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one day
             start_date = end_date - pd.Timedelta(days=1)
-            df = df[df['OperatingDay'] >= pd.Timestamp(start_date)]
-            df = df[df['OperatingDay'] <= pd.Timestamp(end_date)] 
-        
+            query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(query, connection)
+ 
         df = df.sort_values(by=['SettlementPointName', 'OperatingDay', 'HourEnding'])
 
         df = df.pivot(index=['OperatingDay','HourEnding'], columns=['SettlementPointName'], values=['SettlementPointPrice'])
@@ -210,14 +211,11 @@ def get_chart(chart_type, start_date, end_date):
             "LZ_WEST": df["SettlementPointPrice"]["LZ_WEST"].tolist()
         }
 
-        ch_days = df['OperatingDay'].tolist()
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
         ch_times = df['HourEnding'].tolist()
-
-        ch_days_dt = []
-        for day in ch_days:
-            ch_days_dt.append(pd.Timestamp.to_pydatetime(day))
+        ch_days = df['OperatingDay'].tolist()
         
-        ch_labels = combine_date_time(ch_days_dt, ch_times)
+        ch_labels = combine_date_time(ch_days, ch_times)
         return ch_data, ch_labels
 
     return pd.read_sql_table(chart_type, connection)
