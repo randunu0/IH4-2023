@@ -96,25 +96,25 @@ def chart(chart_type=None, start_date=None, end_date=None):
                 try:
                     start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')
                     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
-                    chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+                    chartdata, chartlabels, peakval, peakdate = get_chart(chart_type, start_date, end_date)
                     start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
                     end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
                 except:
-                    chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+                    chartdata, chartlabels, peakval, peakdate = get_chart(chart_type, start_date, end_date)
                     start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
                     end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
             else:
-                chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+                chartdata, chartlabels, peakval, peakdate = get_chart(chart_type, start_date, end_date)
                 start_date = datetime.datetime.strptime(chartlabels[0], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
                 end_date = datetime.datetime.strptime(chartlabels[-1], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
-            return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
+            return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, peak_val=peakval, peak_date=peakdate, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
         else:
             return render_template('home.html', error="Chart not found")
     if request.method == "POST":
         if chart_type in chart_page_content:
             start_date = request.form.get("start_date")
             end_date = request.form.get("end_date")
-            chartdata, chartlabels = get_chart(chart_type, start_date, end_date)
+            chartdata, chartlabels, peakval, peakdate = get_chart(chart_type, start_date, end_date)
             return render_template('chart.html', chart_data=chartdata, chart_labels=chartlabels, page_content=chart_page_content[chart_type], chart_start_date=start_date, chart_end_date=end_date)
         else:
             return render_template('home.html', error="Chart not found")

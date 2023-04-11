@@ -40,6 +40,19 @@
         <div class="card-body">
           <h3 class="card-title">{{ page_content["title"] }}</h3>
           <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
+
+          <!-- create case statement, for each page_content type -->
+          {% if (page_content["title"] == "Wind + Photovoltaic (PV) Power Generation") %}
+            <p>Wind peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>Solar peak of {{ peak_val[1][0] }}  on {{ peak_date[1][0] }}</p>
+          {% elif (page_content["title"] == "Market Prices") %}
+            <p>Peak of {{ peak_val.tolist()[0] }}  on {{ peak_date.tolist()[0] }}</p>
+          {% elif (page_content["title"] == "System Frequency") %}
+            <p>Peak of {{ peak_val }}  on {{ peak_date }}</p>
+          {% else %}
+            <p>Peak of {{ peak_val }}  on {{ peak_date }}</p>
+          {% endif %}
+        
           <canvas id="lineChart" style="height:250px"></canvas>
           {% if (page_content["title"] == "System Frequency") %}
           <p>A guideline (in orange) is placed at 60.00 Hz, the default electrical frequency in power systems.</p>
@@ -154,9 +167,42 @@
   
   var js_chart_labels = {{ chart_labels| safe }}
 
+  var peak_val = {{ peak_val }}
+  var peakDate = "{{ peak_date }}"
+  
+  // create a copy of the data array and replace all values with null except the peak value
+  var peakData = js_chart_data.slice();
+  var peakIndex;
+
+  // find the index of the peak value
+  js_chart_data.forEach(function (item, index) {
+    if (item === peak_val) {
+      peakData[index] = peak_val;
+    }else{
+      peakData[index] = null;
+    }
+  });
+
+  // create the chart
   var data = {
     labels: js_chart_labels,
+    // add a dataset with the peak value
     datasets: [{
+      label: "Peak {{ page_content['units']|safe }}",
+      data: peakData,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)'
+      ],
+      borderWidth: 2,
+      fill: false,
+      pointRadius: 7,
+      pointHoverRadius: 10,
+      pointStyle: 'circle'
+    },
+    {
       label: "{{ page_content['units']|safe }}",
       data: js_chart_data,
       backgroundColor: [
@@ -236,7 +282,7 @@
       }
     }
   },
-  {% endif %}
+  {% endif %} 
   elements: {
     point: {
       radius: 0
@@ -340,6 +386,33 @@
   var js_chart_data = {{ chart_data }}
   var js_chart_labels = {{ chart_labels| safe }}
 
+  //find peak values from js_chart_data[0] and js_chart_data[1]
+  var peak_wind = Math.max.apply(Math, js_chart_data[0]);
+  var peak_pv = Math.max.apply(Math, js_chart_data[1]);
+  
+  //find index of peak values
+  var peak_wind_index = js_chart_data[0].indexOf(peak_wind);
+  var peak_pv_index = js_chart_data[1].indexOf(peak_pv);
+
+  //create dataset with peak values for only wind and pv in the correct indexes and null elsewhere
+  var peak_wind_data = [];
+  var peak_pv_data = [];
+
+  js_chart_data[0].forEach(function (value, index) {
+    if (index == peak_wind_index) {
+      peak_wind_data.push(value);
+    } else {
+      peak_wind_data.push(null);
+    }
+  });
+  js_chart_data[1].forEach(function (value, index) {
+    if (index == peak_pv_index) {
+      peak_pv_data.push(value);
+    } else {
+      peak_pv_data.push(null);
+    }
+  });
+
   var data = {
     labels: js_chart_labels,
     datasets: [
@@ -366,7 +439,39 @@
         ],
         borderWidth: 2,
         fill: false
-      }]
+      },
+      //add wind and pv peak datasets
+      {
+        label: "Peak {{ page_content['units'][0]|safe }}",
+        data: peak_wind_data,
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle'
+      },
+      {
+        label: "Peak {{ page_content['units'][1]|safe }}",
+        data: peak_pv_data,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle' 
+      }
+      ]
   };
 
   var windData = {
@@ -878,12 +983,62 @@
      */
     'use strict';
 
-  // var js_chart_data = {{ chart_data }}
+  var js_chart_data = {{ chart_data| safe }}
   var js_chart_labels = {{ chart_labels| safe }}
+
+  //get all of the keys from chart_data
+  var js_chart_keys = Object.keys(js_chart_data);
+  var abs_peak_price_index = 0;
+  var abs_peak_price = 0;
+
+  //iterate over all of the keys and find the absolute peak price
+  for (var i = 0; i < js_chart_keys.length; i++) {
+    var key = js_chart_keys[i];
+    var data = js_chart_data[key];
+    for (var j = 0; j < data.length; j++) {
+      if (data[j] > abs_peak_price) {
+        abs_peak_price = data[j];
+        abs_peak_price_index = j;
+      }
+    }
+  }
+
+  //create an array for the ablsolute peak price where the peak price is at the correct index and the rest of the data is null
+  var abs_peak_price_array = [];
+  for (var i = 0; i < js_chart_labels.length; i++) {
+    if (i == abs_peak_price_index) {
+      abs_peak_price_array.push(abs_peak_price);
+    } else {
+      abs_peak_price_array.push(null);
+    }
+  }
+
+  //create the dataset for the absolute peak price
+  var abs_peak_price_dataset = {
+    label: "Absolute Peak Price",
+    data: abs_peak_price_array,
+    backgroundColor: [
+    'rgba(255, 206, 86, 0.2)'
+    ],
+    borderColor: [
+    'rgba(255, 206, 86, 1)'
+    ],
+    borderWidth: 1,
+    fill: false,
+    pointRadius: 7,
+    pointBackgroundColor: 'rgba(255, 206, 86, 0.2)',
+    pointBorderColor: 'rgba(255, 206, 86, 1)',
+    pointStyle: 'circle',
+    pointHoverRadius: 10
+  }
+
+
 
   var data = {
     labels: js_chart_labels,
     datasets: [
+    //add in the peak price dataset
+    abs_peak_price_dataset,
     {
         label: "Austin Energy",
         data: {{ chart_data["LZ_AEN"] }},
