@@ -74,6 +74,57 @@
   </div>
   {% endif %}
   
+  {% if (page_content["title"] == "Responsive Reserve Capacity") %}
+  <div class="row">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ page_content['units'][0]|safe }}</h3>
+          <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
+          <canvas id="generationChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ page_content['units'][1]|safe }}</h3>
+          <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
+          <canvas id="loadChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+    
+  {% if (page_content["title"] == "Responsive Reserve Capacity") %}
+  <div class="row">
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ page_content['units'][0]|safe }}</h3>
+          <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
+          <canvas id="onChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6 grid-margin stretch-card" style="height: fit-content;">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ page_content['units'][1]|safe }}</h3>
+          <p>Data from {{ chart_start_date }} to {{ chart_end_date }}</p>
+          <canvas id="bothChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
   {% if (page_content["title"] == "Generation by Fuel Type") %}
   <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
@@ -556,6 +607,472 @@
 <!-- End Download CSV for this page -->
 
 {% endif %}
+
+
+{% if (page_content["title"] == "Responsive Reserve Capacity") %}
+
+<!-- CHART js for this page -->
+<script>
+  $(function () {
+    /* ChartJS
+    * -------
+    * Data and config for chartjs
+    */
+    'use strict';
+
+  var js_chart_data = {{ chart_data }}
+  var js_chart_labels = {{ chart_labels| safe }}
+
+  var data = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][0]|safe }}",
+        data: js_chart_data[0],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        label: "{{ page_content['units'][1]|safe }}",
+        data: js_chart_data[1],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var generationData = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][0]|safe }}",
+        data: js_chart_data[0],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var loadData = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][1]|safe }}",
+        data: js_chart_data[1],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var options = {
+    interaction: {
+      intersect: false,
+      mode: 'index'
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          parser: "yyyy-MM-dd HH:mm",
+          displayFormats: {
+            hour: "MMM d, h a"
+          }
+        },
+        grid: {
+          color: 'rgba(204,204,204,0.4)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Date/Time'
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(204,204,204,0.4)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Generation in MW'
+        }
+      }
+    },
+    legend: {
+      display: true
+    },
+    tooltips: {
+      mode: 'nearest'
+    },
+    hover: {
+      mode: 'nearest',
+      animationDuration: 0
+    },
+    elements: {
+      point: {
+        radius: 0
+      }
+    }
+  };
+
+  if ($("#lineChart").length) {
+    var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+  }
+
+  if ($("#generationChart").length) {
+    var generationChartCanvas = $("#generationChart").get(0).getContext("2d");
+    var generationChart = new Chart(generationChartCanvas, {
+      type: 'line',
+      data: generationData,
+      options: options
+    });
+  }
+
+  if ($("#loadChart").length) {
+    var loadChartCanvas = $("#loadChart").get(0).getContext("2d");
+    var loadChart = new Chart(loadChartCanvas, {
+      type: 'line',
+      data: loadData,
+      options: options
+    });
+  }
+
+
+  });
+
+// client side filtering
+// function filterDate(){
+//   const starting = document.getElementById('start_date').value;
+//   console.log(starting);
+//   const ending = document.getElementById('end_date').value;
+
+
+// }
+</script>
+<!-- End CHART js for this page -->
+
+
+<!-- Download CSV for this page -->
+<script>
+
+  var js_chart_data = {{ chart_data }}
+  var js_chart_labels = {{ chart_labels| safe }}
+
+  function formatTime(date) {
+    let hour = date.getHours();
+    let minutes = date.getMinutes();
+    // format
+    hour = hour < 10 ? '0' + hour : hour;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    return `${hour}:${minutes}`
+  }
+
+  function formatDate(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    // formatting
+    year = year.toString()
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+
+    return `${year}-${month}-${day}`
+  }
+
+  function download_csv() {
+    var csv = '';
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_header = "Date,Time (US Central Time),{{ page_content['units'][0]|safe }},{{ page_content['units'][1]|safe }}\n";
+
+    csv += csv_credits;
+    csv += csv_header;
+
+    for (i = 0; i < js_chart_labels.length; i++) {
+      let csv_row = [];
+      let csv_dateTime = new Date(js_chart_labels[i]);
+      csv_row.push(formatDate(csv_dateTime));
+      csv_row.push(formatTime(csv_dateTime));
+      csv_row.push(js_chart_data[0][i]);
+      csv_row.push(js_chart_data[1][i]);
+
+      csv = csv + csv_row.join(',') + '\n';
+    }
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.click();
+  }
+
+</script>
+<!-- End Download CSV for this page -->
+
+{% endif %}
+
+
+
+{% if (page_content["title"] == "Real-Time Operating Reserve Demand Curve Capacity") %}
+
+<!-- CHART js for this page -->
+<script>
+  $(function () {
+    /* ChartJS
+    * -------
+    * Data and config for chartjs
+    */
+    'use strict';
+
+  var js_chart_data = {{ chart_data }}
+  var js_chart_labels = {{ chart_labels| safe }}
+
+  var data = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][0]|safe }}",
+        data: js_chart_data[0],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      },
+      {
+        label: "{{ page_content['units'][1]|safe }}",
+        data: js_chart_data[1],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var onlineData = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][0]|safe }}",
+        data: js_chart_data[0],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var bothData = {
+    labels: js_chart_labels,
+    datasets: [
+      {
+        label: "{{ page_content['units'][1]|safe }}",
+        data: js_chart_data[1],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false
+      }]
+  };
+
+  var options = {
+    interaction: {
+      intersect: false,
+      mode: 'index'
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          parser: "yyyy-MM-dd HH:mm",
+          displayFormats: {
+            hour: "MMM d, h a"
+          }
+        },
+        grid: {
+          color: 'rgba(204,204,204,0.4)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Date/Time'
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(204,204,204,0.4)',
+          borderColor: 'grey',
+          tickColor: 'grey'
+        },
+        title: {
+          display: true,
+          text: 'Generation in MW'
+        }
+      }
+    },
+    legend: {
+      display: true
+    },
+    tooltips: {
+      mode: 'nearest'
+    },
+    hover: {
+      mode: 'nearest',
+      animationDuration: 0
+    },
+    elements: {
+      point: {
+        radius: 0
+      }
+    }
+  };
+
+  if ($("#lineChart").length) {
+    var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+  }
+
+  if ($("#onChart").length) {
+    var onChartCanvas = $("#onChart").get(0).getContext("2d");
+    var onChart = new Chart(onChartCanvas, {
+      type: 'line',
+      data: bothData,
+      options: options
+    });
+  }
+
+  if ($("#bothChart").length) {
+    var bothChartCanvas = $("#bothChart").get(0).getContext("2d");
+    var bothChart = new Chart(bothChartCanvas, {
+      type: 'line',
+      data: bothData,
+      options: options
+    });
+  }
+
+
+  });
+
+// client side filtering
+// function filterDate(){
+//   const starting = document.getElementById('start_date').value;
+//   console.log(starting);
+//   const ending = document.getElementById('end_date').value;
+
+
+// }
+</script>
+<!-- End CHART js for this page -->
+
+
+<!-- Download CSV for this page -->
+<script>
+
+  var js_chart_data = {{ chart_data }}
+  var js_chart_labels = {{ chart_labels| safe }}
+
+  function formatTime(date) {
+    let hour = date.getHours();
+    let minutes = date.getMinutes();
+    // format
+    hour = hour < 10 ? '0' + hour : hour;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    return `${hour}:${minutes}`
+  }
+
+  function formatDate(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    // formatting
+    year = year.toString()
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+
+    return `${year}-${month}-${day}`
+  }
+
+  function download_csv() {
+    var csv = '';
+    var csv_credits = 'Data from: Texas Grid Analytics (grid-analytics.ece.utexas.edu)\nChart: {{page_content["title"]|safe}} from {{ chart_start_date }} to {{ chart_end_date }}\n'
+    var csv_header = "Date,Time (US Central Time),{{ page_content['units'][0]|safe }},{{ page_content['units'][1]|safe }}\n";
+
+    csv += csv_credits;
+    csv += csv_header;
+
+    for (i = 0; i < js_chart_labels.length; i++) {
+      let csv_row = [];
+      let csv_dateTime = new Date(js_chart_labels[i]);
+      csv_row.push(formatDate(csv_dateTime));
+      csv_row.push(formatTime(csv_dateTime));
+      csv_row.push(js_chart_data[0][i]);
+      csv_row.push(js_chart_data[1][i]);
+
+      csv = csv + csv_row.join(',') + '\n';
+    }
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'TGA-{{ page_content["title"] }}-{{ chart_start_date }}-{{ chart_end_date }}.csv';
+    hiddenElement.click();
+  }
+
+</script>
+<!-- End Download CSV for this page -->
+
+{% endif %}
+
 
 {% if (page_content["title"] == "Generation by Fuel Type") %}
 

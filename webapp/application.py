@@ -34,6 +34,33 @@ chart_page_content = {
         "short_description": "",
         "html_description": "System-Wide Demand displays the current and historical power demand of the ERCOT grid, which is the expected total electrical power that is required to be provided to the entire grid. The scheduled generation for the total load ('load' is an engineering term that means the recipient/consumer of electrical power) is calculated with the expected total demand of all customers, among many other variables, so ERCOT uses dynamic forecasting models to try to maximally reduce the error between the forecasted demand and actual demand. Naturally, one may wonder how difficult correctly predicting the total system demand could be, or why it's so important to be as accurate as possible. For starters, ERCOT serves at least 26 million Texans, most of whom are residential consumers with smaller loads plus a smaller number of commercial and other non-residential consumers with typically much larger loads. Each load contributes its own variability to the total load and demand of the system. A few other major factors of variability in demand include weather and social events (such as the Super Bowl). It's important to be as accurate as possible so that the total generation is controlled to be as close to the total actual demand; the difference in power between generation and demand causes variance in the system frequency, which is very sensitive and must be kept relatively stable. This data is updated every 15 minutes. <br/> <br/> <strong>Fun Fact:</strong> The ERCOT system had a record peak demand of 74,820 MW in August 2019. (<a href='https://www.ercot.com/files/docs/2021/12/30/ERCOT_Fact_Sheet.pdf'>Source</a>) <br/><br/>  <a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=12340&reportTitle=System-Wide%20Demand&showHTMLView=&mimicKey'>Data Sources</a>"
     },
+    "physical-responsive-capability":{
+        "title": "Physical Responsive Capability",
+        "menu_title": "PRC Data",
+        "image": "https://images.unsplash.com/photo-1631898995391-69be412e11a4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2093&q=80",
+        "icon": "mdi-file-cad",
+        "units": "PRC",
+        "refresh": "1 minute",
+        "short description": ""
+    },
+    "responsive-reserve-capacity":{
+        "title": "Responsive Reserve Capacity",
+        "menu_title": "Responsive Reserve",
+        "image": "https://images.unsplash.com/photo-1595831708961-1b13c0dd2422?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2101&q=80",
+        "icon": "mdi-graphql",
+        "units": ["Generation Resources in MW", " Load Resources in MW"],
+        "refresh": "1 minute",
+        "short description": ""
+    },
+    "demand-curve-capacity":{
+        "title": "Operating Reserve Demand Capacity",
+        "menu_title": "Operating Reserve",
+        "image": "https://images.unsplash.com/photo-1581094289810-adf5d25690e3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+        "icon": "mdi-vector-curve",
+        "units": ["Online Reserve Cap in MW", "On and Offline Reserve Cap in MW"],
+        "refresh": "1 minute",
+        "short description": ""
+    },
     "fuel-type-generation": {
         "title": "Generation by Fuel Type",
         "menu_title": "Fuel Type Generation",
@@ -64,7 +91,6 @@ chart_page_content = {
         "short_description": "",
         "html_description": "Wind and Photovoltaic (PV) Power Generation displays the system-wide wind and photovoltaic power production. This data is updated every hour. <br/><br/> Photovoltaic Power Generation depends on four factors, namely: sun intensity, cloud cover, module temperature, and humidity. Most solar energy is collected when the sun is at its peak, which is usually midday. When it is a cloudy day, there is a decrease in power generation, because the cloud reflects some of the sun’s rays and limits the amount of sun absorption by the solar panels. However, solar cells work best at low temperatures so when the temperature is at its highest, typically during the summer, the heat causes the semiconductor properties to shift, which results in the panel’s performance reduction. Another factor is humidity because it can reduce solar power output by reflecting or refracting the sunlight away from solar cells, which reduces the amount of sunlight that hits the panels. When humidity penetrates the solar panel, it can also degrade the solar panel itself. (<a href='https://www.sciencedirect.com/science/article/pii/S1364032111000256?casa_token=niTg6lWrHLcAAAAA:isUFaywvmhSpvOFR7PzvymGpu_CIiT7qyNA92qunCQKjl1T1U6ncgOvPc9DnWINXO3rgx-6UTrES'>Source 1</a>), (<a href='https://www.renewablegreenenergypower.com/solar-energy/solar-panel-efficiency'>Source 2</a>) <br/><br/> Wind power generation in an area depends on three factors: wind speed, air density, and weather temperature. A wind turbine is usually shut down when the wind speed is either below or above the cut-in values. When the wind speed is above the cut-in value, the wind turbine extracts the maximum amount of power. However, the relationship between wind speed and output power is not linearly proportional. Meanwhile, the energy produced by the wind is directly proportional to air density. The higher the air density, the larger the amount of power extracted from the wind turbines. Wind power generation is inversely proportional to temperature. The lower the weather temperature the larger the output power from the wind turbines. (<a href= 'https://ieeexplore.ieee.org/document/8301377'>Source</a>) <br/><br /><strong>Fun Fact:</strong> The ERCOT system had a record wind generation of 24,681 MW on December 23, 2021, and a record photovoltaic generation of 7,036 MW on August 3, 2021. (<a href='https://www.ercot.com/files/docs/2021/12/30/ERCOT_Fact_Sheet.pdf'>Source</a>) <br/><br/><a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=13028&amp;reportTitle=Wind%20Power%20Production%20-%20Hourly%20Averaged%20Actual%20and%20Forecasted%20Values&amp;showHTMLView=&amp;mimicKey'>Data Source (Wind)</a>, <a href='https://sa.ercot.com/misapp/GetReports.do?reportTypeId=13483&amp;reportTitle=Solar%20Power%20Production%20-%20Hourly%20Averaged%20Actual%20and%20Forecasted%20Values&amp;showHTMLView=&amp;mimicKey'>Data Source (PV)</a>"
     },
-    
     "electricity-prices": {
         "title": "Market Prices",
         "menu_title": "Market Prices",
