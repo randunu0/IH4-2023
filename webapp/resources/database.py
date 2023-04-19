@@ -310,34 +310,5 @@ def get_chart(chart_type, start_date, end_date):
         ch_labels = combine_date_time(ch_days, ch_times)
         return ch_data, ch_labels
 
-#system ancillary services
-    # if chart_type == 'system-ancillary-services':
-    #     if (start_date and end_date):
-    #         end_date = pd.Timestamp(end_date)
-    #         start_date = pd.Timestamp(start_date)
-    #         query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-    #     else:
-    #         query = """SELECT * FROM GRID_ANALYTICS.PRC ORDER BY OperatingDay"""
-    #         df = pd.read_sql_query(query, connection)
-    #         end_date = df.iloc[-1].get('OperatingDay')
-    #         # DEFAULT VIEW: one day
-    #         start_date = end_date - pd.Timedelta(days=1)
-    #         query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-    #     df = pd.read_sql_query(query, connection)
-
-    #     ch_data = df["CurrentFrequency"].tolist()
-
-    #     df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
-    #     ch_times = df['HourEnding'].tolist()
-    #     ch_days = df['OperatingDay'].tolist()
-        
-    #     ch_labels = combine_date_time(ch_days, ch_times)
-
-    #     query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE DEMAND = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
-    #     df_peak = pd.read_sql_query(query, connection)
-    #     peak_val = df_peak["Demand"]
-    #     peak_date = df_peak["OperatingDay"]
-    #     return ch_data, ch_labels
-    
 
     return pd.read_sql_table(chart_type, connection)
