@@ -156,9 +156,24 @@ def get_chart(chart_type, start_date, end_date):
 
         ch_labels = combine_date_time(ch_days, ch_times)
 
-        query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE DEMAND = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
+        #query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE DEMAND = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
+        query = "SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD WHERE Demand = (SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+        query_date = "SELECT OperatingDay FROM GRID_ANALYTICS.SWD WHERE Demand = (SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+        # all time max
+        query_max = "SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD WHERE Demand = (SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD)"
+        query_max_date = "SELECT OperatingDay FROM GRID_ANALYTICS.SWD WHERE Demand = (SELECT MAX(Demand) FROM GRID_ANALYTICS.SWD)"
 
-        return ch_data, ch_labels
+        df_peak = pd.read_sql_query(query, connection)
+        df_peak_max = pd.read_sql_query(query_max, connection)
+        peak_val = [df_peak["MAX(Demand)"].to_list()[0] / 1000]
+        peak_val.append(df_peak_max["MAX(Demand)"].tolist()[0] / 1000)
+
+        df_peak_date = pd.read_sql_query(query_date, connection)
+        df_peak_max_date = pd.read_sql_query(query_max_date, connection)
+        peak_date = [df_peak_date["OperatingDay"].to_list()[0]]
+        peak_date.append(df_peak_max_date["OperatingDay"].tolist()[0])
+        
+        return ch_data, ch_labels, peak_val, peak_date
 
     # -----------------------------------
     # Fuel Type Generation
@@ -196,8 +211,42 @@ def get_chart(chart_type, start_date, end_date):
         ch_days = df['OperatingDay'].tolist()
         
         ch_labels = combine_date_time_24bug(ch_days, ch_times)
+        
+        query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df_peak = pd.read_sql_query(query, connection)
+        
+        df_peak_coal = df_peak.sort_values(by=['Coal'], ascending=False).head(1)
+        peak_val_coal = df_peak_coal["Coal"]
+        
+        df_peak_gas = df_peak.sort_values(by=['Gas'], ascending=False).head(1)
+        peak_val_gas = df_peak_gas["Gas"]
 
-        return ch_data, ch_labels
+        df_peak_gas_cc = df_peak.sort_values(by=['Gas-CC'], ascending=False).head(1)
+        peak_val_gas_cc = df_peak_gas_cc["Gas-CC"]
+
+        df_peak_hydro = df_peak.sort_values(by=['Hydro'], ascending=False).head(1)
+        peak_val_hydro = df_peak_hydro["Hydro"]
+
+        df_peak_nuclear = df_peak.sort_values(by=['Nuclear'], ascending=False).head(1)
+        peak_val_nuclear = df_peak_nuclear["Nuclear"]
+
+        df_peak_other = df_peak.sort_values(by=['Other'], ascending=False).head(1)
+        peak_val_other = df_peak_other["Other"]
+
+        df_peak_solar = df_peak.sort_values(by=['Solar'], ascending=False).head(1)
+        peak_val_solar = df_peak_solar["Solar"]
+
+        df_peak_wind = df_peak.sort_values(by=['Wind'], ascending=False).head(1)
+        peak_val_wind = df_peak_wind["Wind"]
+
+            
+
+
+
+        peak_val = df_peak["Demand"]
+        peak_date = df_peak["OperatingDay"]
+
+        return ch_data, ch_labels, peak_val, peak_date
 
     # -----------------------------------
     # System Frequency
@@ -225,7 +274,32 @@ def get_chart(chart_type, start_date, end_date):
         
         ch_labels = combine_date_time(ch_days, ch_times)
 
-        return ch_data, ch_labels
+        #query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE Demand = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
+        #query = """SELECT * FROM GRID_ANALYTICS.RTSC WHERE CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC)"""
+        #query = "SELECT * FROM GRID_ANALYTICS.RTSC WHERE CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+        
+        #query = "SELECT OperatingDay FROM (GRID_ANALYTICS.RTSC WHERE (CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM (GRID_ANALYTICS.RTSC WHERE (OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") +"')))))"
+        #query = "SELECT OperatingDay FROM GRID_ANALYTICS.RTSC WHERE CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+        #query = SELECT OperatingDay BETWEEN '2023-02-11' AND '2023-02-11' AND (CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '2023-02-11' AND '2023-02-11'))
+        
+        query = "SELECT MAX(CurrentFrequency) as max_frequency FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "' AND CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+        query_date = "SELECT OperatingDay FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "' AND CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '" + start_date.strftime("%Y-%m-%d") + "' AND '" + end_date.strftime("%Y-%m-%d") + "')"
+
+        # all time max frequency
+        query_max = "SELECT MAX(CurrentFrequency) as max_frequency FROM GRID_ANALYTICS.RTSC"
+        query_max_date = "SELECT OperatingDay FROM GRID_ANALYTICS.RTSC WHERE CurrentFrequency = (SELECT MAX(CurrentFrequency) FROM GRID_ANALYTICS.RTSC)"
+
+        df_peak = pd.read_sql_query(query, connection)
+        df_peak_date = pd.read_sql_query(query_date, connection)
+        df_peak_max = pd.read_sql_query(query_max, connection)
+        df_peak_max_date = pd.read_sql_query(query_max_date, connection)
+
+        peak_val = [df_peak["max_frequency"].tolist()[0]]
+        peak_date = [df_peak_date["OperatingDay"].tolist()[0]]
+        peak_val.append(df_peak_max["max_frequency"].tolist()[0])
+        peak_date.append(df_peak_max_date["OperatingDay"].tolist()[0])
+
+        return ch_data, ch_labels, peak_val, peak_date
     
     # -----------------------------------
     # Wind and PV
@@ -261,14 +335,56 @@ def get_chart(chart_type, start_date, end_date):
         df = pd.read_sql_query(text(query), connection)
         
         wind_data = df['SystemWide'].tolist()
-
+        ch_data = [wind_data, pv_data]
 
         df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
         wind_times = df['HourEnding'].tolist()
         wind_days = df['OperatingDay'].tolist()
 
         wind_labels = combine_date_time(wind_days, wind_times)
-        return [wind_data, pv_data], wind_labels
+        ch_labels = wind_labels
+
+        #query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE DEMAND = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
+
+        # wind peak        
+        query_wind = """SELECT MAX(SystemWide) FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        #wind peak date
+        query_wind_date = """SELECT OperatingDay FROM GRID_ANALYTICS.WPP WHERE SystemWide = (SELECT MAX(SystemWide) FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+        # pv peak
+        query_pv = """SELECT MAX(SystemWide) FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        # pv peak date
+        query_pv_date = """SELECT OperatingDay FROM GRID_ANALYTICS.SPP WHERE SystemWide = (SELECT MAX(SystemWide) FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+
+        # absolute wind peak
+        query_max_wind = """SELECT MAX(SystemWide) FROM GRID_ANALYTICS.WPP"""
+        # absolute wind peak date
+        query_max_wind_date = """SELECT OperatingDay FROM GRID_ANALYTICS.WPP WHERE SystemWide = (SELECT MAX(SystemWide) FROM GRID_ANALYTICS.WPP)"""
+        # absolute pv peak
+        query_max_pv = """SELECT MAX(SystemWide) FROM GRID_ANALYTICS.SPP"""
+        # absolute pv peak date
+        query_max_pv_date = """SELECT OperatingDay FROM GRID_ANALYTICS.SPP WHERE SystemWide = (SELECT MAX(SystemWide) FROM GRID_ANALYTICS.SPP)"""
+
+        df_peak = pd.read_sql_query(query_wind, connection)
+        df_peak_pv = pd.read_sql_query(query_pv, connection)
+        df_peak_max_wind = pd.read_sql_query(query_max_wind, connection)
+        df_peak_max_pv = pd.read_sql_query(query_max_pv, connection)
+
+        df_peak_date = pd.read_sql_query(query_wind_date, connection)
+        df_peak_pv_date = pd.read_sql_query(query_pv_date, connection)
+        df_peak_max_wind_date = pd.read_sql_query(query_max_wind_date, connection)
+        df_peak_max_pv_date = pd.read_sql_query(query_max_pv_date, connection)
+
+        peak_val = df_peak["MAX(SystemWide)"]
+        peak_val.loc[1] = df_peak_pv["MAX(SystemWide)"]
+        peak_val.loc[2] = df_peak_max_wind["MAX(SystemWide)"]
+        peak_val.loc[3] = df_peak_max_pv["MAX(SystemWide)"]
+
+        peak_date = df_peak_date["OperatingDay"]
+        peak_date.loc[1] = df_peak_pv_date["OperatingDay"]
+        peak_date.loc[2] = df_peak_max_wind_date["OperatingDay"]
+        peak_date.loc[3] = df_peak_max_pv_date["OperatingDay"]
+
+        return ch_data, ch_labels, peak_val, peak_date
 
     # -----------------------------------
     # Electricity Prices
@@ -308,7 +424,20 @@ def get_chart(chart_type, start_date, end_date):
         ch_days = df['OperatingDay'].tolist()
         
         ch_labels = combine_date_time(ch_days, ch_times)
-        return ch_data, ch_labels
+
+        #query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE DEMAND = (SELECT MAX(Demand) AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)"""
+        # In the given time range: For each SettlementPointName, give me the max SettlementPointPrice and the OperatingDay it occurred on, then sort by OperatingDay
+
+        # (SELECT MAX(SettlementPointPrice) FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'""" + """)
+        #query = """SELECT MAX(SettlementPointPrice), OperatingDay FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+
+        query = """SELECT OperatingDay, MAX(SettlementPointPrice) FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        
+        df_peak = pd.read_sql_query(query, connection)
+        peak_val = df_peak["MAX(SettlementPointPrice)"]
+        peak_date = df_peak["OperatingDay"]
+
+        return ch_data, ch_labels, peak_val, peak_date
 
 
     return pd.read_sql_table(chart_type, connection)
