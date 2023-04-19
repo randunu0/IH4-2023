@@ -43,14 +43,27 @@
 
           <!-- create case statement, for each page_content type -->
           {% if (page_content["title"] == "Wind + Photovoltaic (PV) Power Generation") %}
+            
             <p>Wind peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
             <p>Solar peak of {{ peak_val[1][0] }}  on {{ peak_date[1][0] }}</p>
+
+            <p>All time wind peak of {{ peak_val[2][0] }}  on {{ peak_date[2][0] }}</p>
+            <p>All time solar peak of {{ peak_val[3][0] }}  on {{ peak_date[3][0] }}</p>
+            
           {% elif (page_content["title"] == "Market Prices") %}
+
             <p>Peak of {{ peak_val.tolist()[0] }}  on {{ peak_date.tolist()[0] }}</p>
+
           {% elif (page_content["title"] == "System Frequency") %}
-            <p>Peak of {{ peak_val }}  on {{ peak_date }}</p>
+
+            <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
+
           {% else %}
-            <p>Peak of {{ peak_val }}  on {{ peak_date }}</p>
+
+            <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
+
           {% endif %}
         
           <canvas id="lineChart" style="height:250px"></canvas>
@@ -167,7 +180,7 @@
   
   var js_chart_labels = {{ chart_labels| safe }}
 
-  var peak_val = {{ peak_val }}
+  var peak_val = {{ peak_val[0] }}
   var peakDate = "{{ peak_date }}"
   
   // create a copy of the data array and replace all values with null except the peak value
