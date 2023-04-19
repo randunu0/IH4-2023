@@ -1,6 +1,7 @@
 from time import strftime
 import pandas as pd
 import sqlalchemy
+from sqlalchemy import text
 import datetime
 import os
 
@@ -44,6 +45,92 @@ def get_chart(chart_type, start_date, end_date):
     connection = database_connection.connect() 
 
     # -----------------------------------
+    # Demand Curve Capacity
+    # -----------------------------------
+    if chart_type == "demand-curve-capacity":
+        if (start_date and end_date):
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        else:
+            query = """SELECT * FROM GRID_ANALYTICS.PRC ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(text(query), connection)
+            end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one day
+            start_date = end_date - pd.Timedelta(days=1)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(text(query), connection)
+
+        or_data = df["OnlineReserveCap"].tolist()
+        oo_data = df["OnOffReserveCap"].tolist()
+
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
+        ch_times = df['HourEnding'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        
+        ch_labels = combine_date_time(ch_days, ch_times)
+        return [or_data, oo_data], ch_labels
+
+
+    # -----------------------------------
+    # Responsive Reserve Capacity
+    # -----------------------------------
+    if chart_type == "responsive-reserve-capacity":
+        if (start_date and end_date):
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        else:
+            query = """SELECT * FROM GRID_ANALYTICS.PRC ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(text(query), connection)
+            end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one day
+            start_date = end_date - pd.Timedelta(days=1)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(text(query), connection)
+
+        gr_data = df["GenerationResources"].tolist()
+        lr_data = df["LoadResources"].tolist()
+
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
+        ch_times = df['HourEnding'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        
+        ch_labels = combine_date_time(ch_days, ch_times)
+
+        return [gr_data, lr_data], ch_labels
+
+
+
+    # -----------------------------------
+    # System Ancillary Services
+    # -----------------------------------
+    if chart_type == "physical-responsive-capability":
+        if (start_date and end_date):
+            end_date = pd.Timestamp(end_date)
+            start_date = pd.Timestamp(start_date)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        else:
+            query = """SELECT * FROM GRID_ANALYTICS.PRC ORDER BY OperatingDay DESC LIMIT 1"""
+            df = pd.read_sql_query(text(query), connection)
+            end_date = df.iloc[-1].get('OperatingDay')
+            # DEFAULT VIEW: one day
+            start_date = end_date - pd.Timedelta(days=1)
+            query = """SELECT * FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        df = pd.read_sql_query(text(query), connection)
+
+        ch_data = df["PhysicalResponsiveCapability"].tolist()
+
+        df["HourEnding"] = df["HourEnding"].apply(td_to_dt)
+        ch_times = df['HourEnding'].tolist()
+        ch_days = df['OperatingDay'].tolist()
+        
+        ch_labels = combine_date_time(ch_days, ch_times)
+
+        return ch_data, ch_labels
+
+
+    # -----------------------------------
     # System Wide Demand
     # -----------------------------------
     if chart_type == "system-wide-demand":
@@ -53,12 +140,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.SWD ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: two weeks
             start_date = end_date - pd.Timedelta(days=14)
             query = """SELECT * FROM GRID_ANALYTICS.SWD WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)
+        df = pd.read_sql_query(text(query), connection)
         
         ch_data_mw = df["Demand"].tolist()
         ch_data = [entry / 1000 for entry in ch_data_mw]
@@ -99,12 +186,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.GBFT ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: one week
             start_date = end_date - pd.Timedelta(days=7)
             query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)        
+        df = pd.read_sql_query(text(query), connection)        
         df = df.sort_values(by=['OperatingDay', 'HourEnding'])
 
         ch_data = {
@@ -172,12 +259,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.RTSC ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: one day
             start_date = end_date - pd.Timedelta(days=1)
             query = """SELECT * FROM GRID_ANALYTICS.RTSC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)
+        df = pd.read_sql_query(text(query), connection)
 
         ch_data = df["CurrentFrequency"].tolist()
 
@@ -224,12 +311,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.SPP ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: one week
             start_date = end_date - pd.Timedelta(days=7)
             query = """SELECT * FROM GRID_ANALYTICS.SPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)
+        df = pd.read_sql_query(text(query), connection)
 
         pv_data = df['SystemWide'].tolist()
         # PV Times are the same as Wind Times so disregard one or the other
@@ -240,12 +327,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.WPP ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: one week
             start_date = end_date - pd.Timedelta(days=7)
             query = """SELECT * FROM GRID_ANALYTICS.WPP WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)
+        df = pd.read_sql_query(text(query), connection)
         
         wind_data = df['SystemWide'].tolist()
         ch_data = [wind_data, pv_data]
@@ -309,12 +396,12 @@ def get_chart(chart_type, start_date, end_date):
             query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         else:
             query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ ORDER BY OperatingDay DESC LIMIT 1"""
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql_query(text(query), connection)
             end_date = df.iloc[-1].get('OperatingDay')
             # DEFAULT VIEW: one day
             start_date = end_date - pd.Timedelta(days=1)
             query = """SELECT * FROM GRID_ANALYTICS.SMPP_LZ WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
-        df = pd.read_sql_query(query, connection)
+        df = pd.read_sql_query(text(query), connection)
  
         df = df.sort_values(by=['SettlementPointName', 'OperatingDay', 'HourEnding'])
 
@@ -351,5 +438,6 @@ def get_chart(chart_type, start_date, end_date):
         peak_date = df_peak["OperatingDay"]
 
         return ch_data, ch_labels, peak_val, peak_date
+
 
     return pd.read_sql_table(chart_type, connection)
