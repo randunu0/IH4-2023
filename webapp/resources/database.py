@@ -69,7 +69,47 @@ def get_chart(chart_type, start_date, end_date):
         ch_days = df['OperatingDay'].tolist()
         
         ch_labels = combine_date_time(ch_days, ch_times)
-        return [or_data, oo_data], ch_labels
+
+        # OnlineReserveCap peak        
+        query_or = """SELECT MAX(OnlineReserveCap) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        # OnlineReserveCap peak date
+        query_or_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE OnlineReserveCap = (SELECT MAX(OnlineReserveCap) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+        # OnOffReserveCap peak
+        query_oo = """SELECT MAX(OnOffReserveCap) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        # OnOffReserveCap peak date
+        query_oo_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE OnOffReserveCap = (SELECT MAX(OnOffReserveCap) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""') AND OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+
+        # absolute OnlineReserveCap peak
+        query_max_or = """SELECT MAX(OnlineReserveCap) FROM GRID_ANALYTICS.PRC"""
+        # absolute OnlineReserveCap peak date
+        query_max_or_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE OnlineReserveCap = (SELECT MAX(OnlineReserveCap) FROM GRID_ANALYTICS.PRC)"""
+        # absolute OnOffReserveCap peak
+        query_max_oo = """SELECT MAX(OnOffReserveCap) FROM GRID_ANALYTICS.PRC"""
+        # absolute OnOffReserveCap peak date
+        query_max_oo_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE OnOffReserveCap = (SELECT MAX(OnOffReserveCap) FROM GRID_ANALYTICS.PRC)"""
+
+        df_peak_or = pd.read_sql_query(query_or, connection)
+        df_peak_oo = pd.read_sql_query(query_oo, connection)
+        df_peak_max_or = pd.read_sql_query(query_max_or, connection)
+        df_peak_max_oo = pd.read_sql_query(query_max_oo, connection)
+
+        df_peak_or_date = pd.read_sql_query(query_or_date, connection)
+        df_peak_oo_date = pd.read_sql_query(query_oo_date, connection)
+        df_peak_max_or_date = pd.read_sql_query(query_max_or_date, connection)
+        df_peak_max_oo_date = pd.read_sql_query(query_max_oo_date, connection)
+
+        peak_val = df_peak_or["MAX(OnlineReserveCap)"]
+        peak_val.loc[1] = df_peak_oo["MAX(OnOffReserveCap)"]
+        peak_val.loc[2] = df_peak_max_or["MAX(OnlineReserveCap)"]
+        peak_val.loc[3] = df_peak_max_oo["MAX(OnOffReserveCap)"]
+
+        peak_date = df_peak_or_date["OperatingDay"]
+        peak_date.loc[1] = df_peak_oo_date["OperatingDay"]
+        peak_date.loc[2] = df_peak_max_or_date["OperatingDay"]
+        peak_date.loc[3] = df_peak_max_oo_date["OperatingDay"]
+
+
+        return [or_data, oo_data], ch_labels, peak_val, peak_date
 
 
     # -----------------------------------
@@ -98,7 +138,45 @@ def get_chart(chart_type, start_date, end_date):
         
         ch_labels = combine_date_time(ch_days, ch_times)
 
-        return [gr_data, lr_data], ch_labels
+        # GenerationResources peak        
+        query_gen = """SELECT MAX(GenerationResources) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        # GenerationResources peak date
+        query_gen_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE GenerationResources = (SELECT MAX(GenerationResources) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+        # LoadResources peak
+        query_load = """SELECT MAX(LoadResources) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
+        # LoadResources peak date
+        query_load_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE LoadResources = (SELECT MAX(LoadResources) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+
+        # absolute generation peak
+        query_max_gen = """SELECT MAX(GenerationResources) FROM GRID_ANALYTICS.PRC"""
+        # absolute generation peak date
+        query_max_gen_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE GenerationResources = (SELECT MAX(GenerationResources) FROM GRID_ANALYTICS.PRC)"""
+        # absolute load peak
+        query_max_load = """SELECT MAX(LoadResources) FROM GRID_ANALYTICS.PRC"""
+        # absolute load peak date
+        query_max_load_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE LoadResources = (SELECT MAX(LoadResources) FROM GRID_ANALYTICS.PRC)"""
+
+        df_peak_gen = pd.read_sql_query(query_gen, connection)
+        df_peak_load = pd.read_sql_query(query_load, connection)
+        df_peak_max_gen = pd.read_sql_query(query_max_gen, connection)
+        df_peak_max_load = pd.read_sql_query(query_max_load, connection)
+
+        df_peak_gen_date = pd.read_sql_query(query_gen_date, connection)
+        df_peak_load_date = pd.read_sql_query(query_load_date, connection)
+        df_peak_max_gen_date = pd.read_sql_query(query_max_gen_date, connection)
+        df_peak_max_load_date = pd.read_sql_query(query_max_load_date, connection)
+
+        peak_val = df_peak_gen["MAX(GenerationResources)"]
+        peak_val.loc[1] = df_peak_load["MAX(LoadResources)"]
+        peak_val.loc[2] = df_peak_max_gen["MAX(GenerationResources)"]
+        peak_val.loc[3] = df_peak_max_load["MAX(LoadResources)"]
+
+        peak_date = df_peak_gen_date["OperatingDay"]
+        peak_date.loc[1] = df_peak_load_date["OperatingDay"]
+        peak_date.loc[2] = df_peak_max_gen_date["OperatingDay"]
+        peak_date.loc[3] = df_peak_max_load_date["OperatingDay"]
+
+        return [gr_data, lr_data], ch_labels, peak_val, peak_date
 
 
 
@@ -127,7 +205,30 @@ def get_chart(chart_type, start_date, end_date):
         
         ch_labels = combine_date_time(ch_days, ch_times)
 
-        return ch_data, ch_labels
+        #query to select peak value and date of entry with highest PhysicalResponsiveCapability in the selected time period        
+        query_val = """SELECT PhysicalResponsiveCapability FROM GRID_ANALYTICS.PRC WHERE PhysicalResponsiveCapability = (SELECT MAX(PhysicalResponsiveCapability) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+        query_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE PhysicalResponsiveCapability = (SELECT MAX(PhysicalResponsiveCapability) FROM GRID_ANALYTICS.PRC WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""')"""
+
+        df_val = pd.read_sql_query(text(query_val), connection)
+        df_date = pd.read_sql_query(text(query_date), connection)
+
+        #query to select peak value and date of entry with highest PhysicalResponsiveCapability of all time
+        query_max_val = """SELECT PhysicalResponsiveCapability FROM GRID_ANALYTICS.PRC WHERE PhysicalResponsiveCapability = (SELECT MAX(PhysicalResponsiveCapability) FROM GRID_ANALYTICS.PRC)"""
+        query_max_date = """SELECT OperatingDay FROM GRID_ANALYTICS.PRC WHERE PhysicalResponsiveCapability = (SELECT MAX(PhysicalResponsiveCapability) FROM GRID_ANALYTICS.PRC)"""
+
+        df_max_val = pd.read_sql_query(text(query_max_val), connection)
+        df_max_date = pd.read_sql_query(text(query_max_date), connection)
+
+        peak_val = [df_val.iloc[-1].get('PhysicalResponsiveCapability')]
+        peak_date = [df_date.iloc[-1].get('OperatingDay')]
+
+        max_val = df_max_val.iloc[-1].get('PhysicalResponsiveCapability')
+        max_date = df_max_date.iloc[-1].get('OperatingDay')
+
+        peak_val.append(max_val)
+        peak_date.append(max_date)
+
+        return ch_data, ch_labels, peak_val, peak_date
 
 
     # -----------------------------------
@@ -215,37 +316,90 @@ def get_chart(chart_type, start_date, end_date):
         query = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE OperatingDay BETWEEN '""" + start_date.strftime("%Y-%m-%d") + """' AND '""" + end_date.strftime("%Y-%m-%d") +"""'"""
         df_peak = pd.read_sql_query(query, connection)
         
-        df_peak_coal = df_peak.sort_values(by=['Coal'], ascending=False).head(1)
-        peak_val_coal = df_peak_coal["Coal"]
+        #select the entry with the highest coal value of all time
+        query_coal = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Coal = (SELECT MAX(Coal) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_coal = pd.read_sql_query(query_coal, connection)
+        peak_val_coal = df_peak_coal["Coal"].tolist()[0]
+        peak_date_coal = df_peak_coal["OperatingDay"].tolist()[0]
         
-        df_peak_gas = df_peak.sort_values(by=['Gas'], ascending=False).head(1)
-        peak_val_gas = df_peak_gas["Gas"]
+        #select the entry with the highest gas value of all time
+        query_gas = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Gas = (SELECT MAX(Gas) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_gas = pd.read_sql_query(query_gas, connection)
+        peak_val_gas = df_peak_gas["Gas"].tolist()[0]
+        peak_date_gas = df_peak_gas["OperatingDay"].tolist()[0]
 
-        df_peak_gas_cc = df_peak.sort_values(by=['Gas-CC'], ascending=False).head(1)
-        peak_val_gas_cc = df_peak_gas_cc["Gas-CC"]
+        #select the entry with the highest gas-cc value of all time
+        query_gas_cc = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE "Gas-CC" = (SELECT MAX("Gas-CC") FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_gas_cc = pd.read_sql_query(query_gas_cc, connection)
+        peak_val_gas_cc = df_peak_gas_cc["Gas-CC"].tolist()[0]
+        peak_date_gas_cc = df_peak_gas_cc["OperatingDay"].tolist()[0]
 
-        df_peak_hydro = df_peak.sort_values(by=['Hydro'], ascending=False).head(1)
-        peak_val_hydro = df_peak_hydro["Hydro"]
+        #select the entry with the highest hydro value of all time
+        query_hydro = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Hydro = (SELECT MAX(Hydro) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_hydro = pd.read_sql_query(query_hydro, connection)
+        peak_val_hydro = df_peak_hydro["Hydro"].tolist()[0]
+        peak_date_hydro = df_peak_hydro["OperatingDay"].tolist()[0]
 
-        df_peak_nuclear = df_peak.sort_values(by=['Nuclear'], ascending=False).head(1)
-        peak_val_nuclear = df_peak_nuclear["Nuclear"]
+        #select the entry with the highest nuclear value of all time
+        query_nuclear = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Nuclear = (SELECT MAX(Nuclear) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_nuclear = pd.read_sql_query(query_nuclear, connection)
+        peak_val_nuclear = df_peak_nuclear["Nuclear"].tolist()[0]
+        peak_date_nuclear = df_peak_nuclear["OperatingDay"].tolist()[0]
 
-        df_peak_other = df_peak.sort_values(by=['Other'], ascending=False).head(1)
-        peak_val_other = df_peak_other["Other"]
+        #select the entry with the highest other value of all time
+        query_other = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Other = (SELECT MAX(Other) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_other = pd.read_sql_query(query_other, connection)
+        peak_val_other = df_peak_other["Other"].tolist()[0]
+        peak_date_other = df_peak_other["OperatingDay"].tolist()[0]
 
-        df_peak_solar = df_peak.sort_values(by=['Solar'], ascending=False).head(1)
-        peak_val_solar = df_peak_solar["Solar"]
+        #select the entry with the highest solar value of all time
+        query_solar = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Solar = (SELECT MAX(Solar) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_solar = pd.read_sql_query(query_solar, connection)
+        peak_val_solar = df_peak_solar["Solar"].tolist()[0]
+        peak_date_solar = df_peak_solar["OperatingDay"].tolist()[0]
 
-        df_peak_wind = df_peak.sort_values(by=['Wind'], ascending=False).head(1)
-        peak_val_wind = df_peak_wind["Wind"]
+        #select the entry with the highest wind value of all time
+        query_wind = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Wind = (SELECT MAX(Wind) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_wind = pd.read_sql_query(query_wind, connection)
+        peak_val_wind = df_peak_wind["Wind"].tolist()[0]
+        peak_date_wind = df_peak_wind["OperatingDay"].tolist()[0]
 
-            
+        #select the entry with the highest biomass value of all time
+        query_biomass = """SELECT * FROM GRID_ANALYTICS.GBFT WHERE Biomass = (SELECT MAX(Biomass) FROM GRID_ANALYTICS.GBFT)"""
+        df_peak_biomass = pd.read_sql_query(query_biomass, connection)
+        peak_val_biomass = df_peak_biomass["Biomass"].tolist()[0]
+        peak_date_biomass = df_peak_biomass["OperatingDay"].tolist()[0]
 
+        #find the all time highest value across all categories
+        peak_val_list = [peak_val_biomass, peak_val_coal, peak_val_gas, peak_val_gas_cc, 
+                         peak_val_hydro, peak_val_nuclear, peak_val_other, peak_val_solar, peak_val_wind]
+        peak_date_list = [peak_date_biomass, peak_date_coal, peak_date_gas, peak_date_gas_cc,
+                            peak_date_hydro, peak_date_nuclear, peak_date_other, peak_date_solar, peak_date_wind]
+        peak_val_all_time = max(peak_val_list)
+        peak_date_all_time = peak_date_list[peak_val_list.index(peak_val_all_time)]
 
+        #python list of all categories
+        categories = ["Biomass", "Coal", "Gas", "Gas-CC", "Hydro", "Nuclear", "Other", "Solar", "Wind"]
 
-        peak_val = df_peak["Demand"]
-        peak_date = df_peak["OperatingDay"]
+        #df_peak_biomass = df_peak.sort_values(by=['Biomass'], ascending=False).head(1)
+        #peak_val_biomass = df_peak_biomass["Biomass"]
 
+        #use for loop to find max value and date for each category in the date range
+        peak_val_list = []
+        peak_date_list = []
+        for category in categories:
+            df_peak_category = df_peak.sort_values(by=[category], ascending=False).head(1)
+            peak_val_list.append(df_peak_category[category].tolist()[0])
+            peak_date_list.append(df_peak_category["OperatingDay"].tolist()[0])
+
+        #select the overall max value from the list of max values
+        peak_val = [max(peak_val_list)]
+        #select the date of the overall max value from the list of max dates
+        peak_date = [peak_date_list[peak_val_list.index(peak_val[0])]]
+
+        #append the all time max value and date to the list of max values and dates
+        peak_val.append(peak_val_all_time)
+        peak_date.append(peak_date_all_time)
         return ch_data, ch_labels, peak_val, peak_date
 
     # -----------------------------------

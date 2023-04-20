@@ -58,6 +58,37 @@
 
             <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
             <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
+          
+          {% elif (page_content["title"] == "System Wide Demand") %}
+
+            <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
+
+          {% elif (page_content["title"] == "Responsive Reserve Capacity") %}
+              
+            <p>Generation peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>Load peak of {{ peak_val[1][0] }}  on {{ peak_date[1][0] }}</p>
+
+            <p>All time Generation peak of {{ peak_val[2][0] }}  on {{ peak_date[2][0] }}</p>
+            <p>All time Load peak of {{ peak_val[3][0] }}  on {{ peak_date[3][0] }}</p>
+        
+          {% elif (page_content["title"] == "Physical Responsive Capability") %}
+
+          <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+          <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
+
+          {% elif (page_content["title"] == "Operating Reserve Demand Capacity") %}
+
+          <p>Online Reserve Capacity peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+          <p>On Off Reserve Capacity peak of {{ peak_val[1][0] }}  on {{ peak_date[1][0] }}</p>
+
+          <p>All time Online Reserve Capacity peak of {{ peak_val[2][0] }}  on {{ peak_date[2][0] }}</p>
+          <p>All time On Off Reserve Capacity peak of {{ peak_val[3][0] }}  on {{ peak_date[3][0] }}</p>
+          
+          {% elif (page_content["title"] == "Generation by Fuel Type") %}
+
+            <p>Peak of {{ peak_val[0] }}  on {{ peak_date[0] }}</p>
+            <p>All time peak of {{ peak_val[1] }}  on {{ peak_date[1] }}</p>
 
           {% else %}
 
@@ -68,7 +99,7 @@
         
           <canvas id="lineChart" style="height:250px"></canvas>
           {% if (page_content["title"] == "System Frequency") %}
-          <p>A guideline (in orange) is placed at 60.00 Hz, the default electrical frequency in power systems.</p>
+            <p>A guideline (in orange) is placed at 60.00 Hz, the default electrical frequency in power systems.</p>
           {% endif %}
         </div>
       </div>
@@ -216,7 +247,7 @@
 {% endif %}
 <!-- End plugin js for this page -->
 
-{% if ((page_content["title"] != "Wind + Photovoltaic (PV) Power Generation") and (page_content["title"] != "Generation by Fuel Type") and (page_content["title"] != "Market Prices")) %}
+{% if ((page_content["title"] != "Operating Reserve Demand Capacity") and (page_content["title"] != "Responsive Reserve Capacity") and (page_content["title"] != "Wind + Photovoltaic (PV) Power Generation") and (page_content["title"] != "Generation by Fuel Type") and (page_content["title"] != "Market Prices")) %}
 
 <!-- CHART js for this page -->
 <script>
@@ -741,6 +772,32 @@
   var js_chart_data = {{ chart_data }}
   var js_chart_labels = {{ chart_labels| safe }}
 
+  var peak_generation = Math.max.apply(Math, js_chart_data[0]);
+  var peak_load = Math.max.apply(Math, js_chart_data[1]);
+  
+  //find index of peak values
+  var peak_generation_index = js_chart_data[0].indexOf(peak_generation);
+  var peak_load_index = js_chart_data[1].indexOf(peak_load);
+
+  //create dataset with peak values for only wind and pv in the correct indexes and null elsewhere
+  var peak_generation_data = [];
+  var peak_load_data = [];
+
+  js_chart_data[0].forEach(function (value, index) {
+    if (index == peak_generation_index) {
+      peak_generation_data.push(value);
+    } else {
+      peak_generation_data.push(null);
+    }
+  });
+  js_chart_data[1].forEach(function (value, index) {
+    if (index == peak_load_index) {
+      peak_load_data.push(value);
+    } else {
+      peak_load_data.push(null);
+    }
+  });
+
   var data = {
     labels: js_chart_labels,
     datasets: [
@@ -767,7 +824,39 @@
         ],
         borderWidth: 2,
         fill: false
-      }]
+      },
+      //add generation and load peak datasets
+      {
+        label: "Peak {{ page_content['units'][0]|safe }}",
+        data: peak_generation_data,
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle'
+      },
+      {
+        label: "Peak {{ page_content['units'][1]|safe }}",
+        data: peak_load_data,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle' 
+      }
+    ]
   };
 
   var generationData = {
@@ -960,7 +1049,7 @@
 
 
 
-{% if (page_content["title"] == "Real-Time Operating Reserve Demand Curve Capacity") %}
+{% if (page_content["title"] == "Operating Reserve Demand Capacity") %}
 
 <!-- CHART js for this page -->
 <script>
@@ -973,6 +1062,94 @@
 
   var js_chart_data = {{ chart_data }}
   var js_chart_labels = {{ chart_labels| safe }}
+
+  //find peak values from js_chart_data[0] and js_chart_data[1]
+  var peak_or = Math.max.apply(Math, js_chart_data[0]);
+  var peak_oo = Math.max.apply(Math, js_chart_data[1]);
+  
+  //find index of peak values
+  var peak_or_index = js_chart_data[0].indexOf(peak_or);
+  var peak_oo_index = js_chart_data[1].indexOf(peak_oo);
+
+  //create dataset with peak values for only wind and pv in the correct indexes and null elsewhere
+  var peak_or_data = [];
+  var peak_oo_data = [];
+
+  js_chart_data[0].forEach(function (value, index) {
+    if (index == peak_or_index) {
+      peak_or_data.push(value);
+    } else {
+      peak_or_data.push(null);
+    }
+  });
+  js_chart_data[1].forEach(function (value, index) {
+    if (index == peak_oo_index) {
+      peak_oo_data.push(value);
+    } else {
+      peak_oo_data.push(null);
+    }
+  });
+
+    // var data = {
+  //   labels: js_chart_labels,
+  //   datasets: [
+  //     {
+  //       label: "{{ page_content['units'][0]|safe }}",
+  //       data: js_chart_data[0],
+  //       backgroundColor: [
+  //         'rgba(54, 162, 235, 0.2)'
+  //       ],
+  //       borderColor: [
+  //         'rgba(54, 162, 235, 1)'
+  //       ],
+  //       borderWidth: 2,
+  //       fill: false
+  //     },
+  //     {
+  //       label: "{{ page_content['units'][1]|safe }}",
+  //       data: js_chart_data[1],
+  //       backgroundColor: [
+  //         'rgba(255, 99, 132, 0.2)'
+  //       ],
+  //       borderColor: [
+  //         'rgba(255,99,132,1)'
+  //       ],
+  //       borderWidth: 2,
+  //       fill: false
+  //     },
+  //     //add wind and pv peak datasets
+  //     {
+  //       label: "Peak {{ page_content['units'][0]|safe }}",
+  //       data: peak_wind_data,
+  //       backgroundColor: [
+  //         'rgba(54, 162, 235, 0.2)'
+  //       ],
+  //       borderColor: [
+  //         'rgba(54, 162, 235, 1)'
+  //       ],
+  //       borderWidth: 2,
+  //       fill: false,
+  //       pointRadius: 7,
+  //       pointHoverRadius: 10,
+  //       pointStyle: 'circle'
+  //     },
+  //     {
+  //       label: "Peak {{ page_content['units'][1]|safe }}",
+  //       data: peak_pv_data,
+  //       backgroundColor: [
+  //         'rgba(255, 99, 132, 0.2)'
+  //       ],
+  //       borderColor: [
+  //         'rgba(255,99,132,1)'
+  //       ],
+  //       borderWidth: 2,
+  //       fill: false,
+  //       pointRadius: 7,
+  //       pointHoverRadius: 10,
+  //       pointStyle: 'circle' 
+  //     }
+  //     ]
+  // };
 
   var data = {
     labels: js_chart_labels,
@@ -1000,7 +1177,39 @@
         ],
         borderWidth: 2,
         fill: false
-      }]
+      },
+      //add or and oo peak datasets
+      {
+        label: "Peak {{ page_content['units'][0]|safe }}",
+        data: peak_or_data,
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle'
+      },
+      {
+        label: "Peak {{ page_content['units'][1]|safe }}",
+        data: peak_oo_data,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)'
+        ],
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointStyle: 'circle' 
+      }
+    ]
   };
 
   var onlineData = {
@@ -1203,7 +1412,6 @@
     * Data and config for chartjs
     */
     'use strict';
-
 
   var js_chart_labels = {{ chart_labels| safe }}
 
